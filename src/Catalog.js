@@ -185,7 +185,7 @@ const Catalog = () => {
 
       <div className="product-grid">
         {loading
-          ? Array.from({ length: 6 }).map(
+          ? Array.from({ length: 8 }).map(
               (
                 _,
                 index // Skeleton for 6 products
