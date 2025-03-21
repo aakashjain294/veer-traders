@@ -13,25 +13,37 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
 
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbwjFznIlDd-Fq5ch0H0JU5LLUAkOwPY6QXnsPJJgtlYcZREZZHzBPTeh0Vo-WAt9NAEnQ/exec";
+    "https://script.google.com/macros/s/AKfycbxRQs6oJFRm38HwNQoql7nnRWDLh8hjJd8Y8cCUR3RLH8CmEo3hKUZH-e8swbLTkCqsWw/exec";
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true); // Start loading
-      const response = await fetch(API_URL);
-      if (!response.ok) throw new Error("Failed to fetch products");
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false); // Stop loading after fetching
-    }
-  };
+    // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        console.log("Fetching data from:", API_URL);
+        
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        
+        const data = await response.json();
+        console.log("Fetched Products Data:", data); // Debugging log
+    
+        if (!Array.isArray(data)) throw new Error("Invalid data format received");
+        
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchProducts();
+    }, []);
+    
+
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
