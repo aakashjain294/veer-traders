@@ -148,6 +148,20 @@ const Catalog = () => {
     window.open(`https://wa.me/${number1}?text=${message}`, "_blank");
   };
 
+  const filteredProducts = products.filter((product) => {
+    const productPrice = parseInt(product.price, 10); // Convert price to number
+  
+    // ✅ Apply Search Filter First
+    if (!product.name.toLowerCase().includes(search.toLowerCase())) return false;
+  
+    // ✅ Apply Price Filter Second
+    if (priceFilter === "below-200") return productPrice < 200;
+    if (priceFilter === "200-500") return productPrice >= 200 && productPrice <= 500;
+    if (priceFilter === "above-500") return productPrice > 500;
+  
+    return true; // Show all products when no filter is applied
+  });
+
   return (
     <div className="container">
       <img src="/logo.webp" alt="Veer Traders Logo" className="logo" />
@@ -186,20 +200,7 @@ const Catalog = () => {
                 </div>
               )
             )
-          : products
-              .filter((product) => {
-                // Convert price from string to number
-                const productPrice = parseInt(product.price);
-                // console.log("Image URL:", product.image);
-                // Apply the price filter logic
-                if (priceFilter === "below-200") return productPrice < 200;
-                if (priceFilter === "200-500")
-                  return productPrice >= 200 && productPrice <= 500;
-                if (priceFilter === "above-500") return productPrice > 500;
-
-                return true; // Show all products if no filter is selected
-              })
-              .map((product, index) => (
+          : filteredProducts.map((product, index) => (
                 <div key={index} className="product-card">
                   <img
                     loading="lazy"
