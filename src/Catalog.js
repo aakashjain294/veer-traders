@@ -11,33 +11,39 @@ const Catalog = () => {
   const [priceFilter, setPriceFilter] = useState("all");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [brandFilter, setBrandFilter] = useState(""); // New Brand Filter State
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbxRQs6oJFRm38HwNQoql7nnRWDLh8hjJd8Y8cCUR3RLH8CmEo3hKUZH-e8swbLTkCqsWw/exec";
+    "https://script.google.com/macros/s/AKfycbyLRHBIqnD3nI7ydRyLvj9CqoCWXZpy73SSk1Ra-Ws3ExyCmrxt148FZvpAzP4pJq-s/exec";
 
   // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      console.log("Fetching data from:", API_URL);
+      // console.log("Fetching data from:", API_URL);
 
       const response = await fetch(API_URL);
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
-      console.log("Fetched Products Data:", data); // Debugging log
+      // console.log("Fetched Products Data:", data); // Debugging log
 
       if (!Array.isArray(data)) throw new Error("Invalid data format received");
 
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      // console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
   };
+  const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    const uniqueBrands = [...new Set(products.map((product) => product.brand))];
+    setBrands(uniqueBrands);
+  }, [products]); // Run when products change
 
   useEffect(() => {
     fetchProducts();
@@ -152,6 +158,8 @@ const Catalog = () => {
     // ✅ Apply Search Filter First
     if (!product.name.toLowerCase().includes(search.toLowerCase()))
       return false;
+    // ✅ Apply Brand Filter Second (Only filter if brandFilter is selected)
+    if (brandFilter && product.brand !== brandFilter) return false;
 
     // ✅ Apply Price Filter Second
     if (priceFilter === "below-200") return productPrice < 200;
@@ -189,6 +197,19 @@ const Catalog = () => {
         <option value="below-200">Below ₹200</option>
         <option value="200-500">₹200 - ₹500</option>
         <option value="above-500">Above ₹500</option>
+      </select>
+
+      <select
+        className="brand-filter"
+        value={brandFilter}
+        onChange={(e) => setBrandFilter(e.target.value)}
+      >
+        <option value="">All Brands</option>
+        {brands.map((brand, index) => (
+          <option key={index} value={brand}>
+            {brand}
+          </option>
+        ))}
       </select>
 
       <div className="product-grid">

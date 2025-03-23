@@ -471,6 +471,23 @@ h1 {
   border-color: #b94a00;
 }
 
+.brand-filter {
+  width: 100%;
+  max-width: 220px;
+  padding: 10px;
+  border: 2px solid #ff6600;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  background: white;
+  cursor: pointer;
+}
+
+.brand-filter:hover {
+  border-color: #b94a00;
+}
+
+
 .footer a {
   color: #ff6600; /* Yellow links */
   text-decoration: none;
