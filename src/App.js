@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { lazy, Suspense } from "react";
-
+import { Helmet } from "react-helmet";
 // ✅ Lazy Load Catalog Component for Faster Load Time
 const Catalog = lazy(() => import("./Catalog"));
 
@@ -61,6 +61,15 @@ function App() {
 
   return (
     <div>
+      <Helmet>
+        <link
+          rel="preload"
+          href="/products.csv"
+          as="fetch"
+          type="text/csv"
+          crossOrigin="anonymous"
+        />
+      </Helmet>
       {/* ✅ Suspense Wrapper for Lazy Loading */}
       <Suspense fallback={<div>Loading Catalog...</div>}>
         <Catalog

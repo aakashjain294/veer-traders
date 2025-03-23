@@ -34,7 +34,9 @@ body.modal-open {
 .logo {
   display: block;
   margin: 0 auto;
-  max-width: 350px;
+  /* max-width: 350px; */
+  width: 350px;  /* Adjust based on your design */
+  height: auto;
 }
 
 /* Heading */

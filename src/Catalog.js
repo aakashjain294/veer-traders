@@ -15,33 +15,33 @@ const Catalog = () => {
   const API_URL =
     "https://script.google.com/macros/s/AKfycbxRQs6oJFRm38HwNQoql7nnRWDLh8hjJd8Y8cCUR3RLH8CmEo3hKUZH-e8swbLTkCqsWw/exec";
 
-    // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+  // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        console.log("Fetching data from:", API_URL);
-        
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        
-        const data = await response.json();
-        console.log("Fetched Products Data:", data); // Debugging log
-    
-        if (!Array.isArray(data)) throw new Error("Invalid data format received");
-        
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    useEffect(() => {
-      fetchProducts();
-    }, []);
-    
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      console.log("Fetching data from:", API_URL);
+
+      const response = await fetch(API_URL);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const data = await response.json();
+      console.log("Fetched Products Data:", data); // Debugging log
+
+      if (!Array.isArray(data)) throw new Error("Invalid data format received");
+
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -148,21 +148,29 @@ const Catalog = () => {
 
   const filteredProducts = products.filter((product) => {
     const productPrice = parseInt(product.price, 10); // Convert price to number
-  
+
     // ✅ Apply Search Filter First
-    if (!product.name.toLowerCase().includes(search.toLowerCase())) return false;
-  
+    if (!product.name.toLowerCase().includes(search.toLowerCase()))
+      return false;
+
     // ✅ Apply Price Filter Second
     if (priceFilter === "below-200") return productPrice < 200;
-    if (priceFilter === "200-500") return productPrice >= 200 && productPrice <= 500;
+    if (priceFilter === "200-500")
+      return productPrice >= 200 && productPrice <= 500;
     if (priceFilter === "above-500") return productPrice > 500;
-  
+
     return true; // Show all products when no filter is applied
   });
 
   return (
     <div className="container">
-      <img src="/logo.webp" alt="Veer Traders Logo" className="logo" />
+      <img
+        src="/logo.webp"
+        alt="Veer Traders Logo"
+        className="logo"
+        loading="eager"
+        fetchpriority="high"
+      />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
 
       <input
@@ -199,39 +207,39 @@ const Catalog = () => {
               )
             )
           : filteredProducts.map((product, index) => (
-                <div key={index} className="product-card">
-                  <img
-                    loading="lazy"
-                    src={product.image}
-                    alt={product.name}
-                    onClick={() => setSelectedProduct(product)}
+              <div key={index} className="product-card">
+                <img
+                  loading="lazy"
+                  src={product.image}
+                  alt={product.name}
+                  onClick={() => setSelectedProduct(product)}
+                />
+                <h2>{product.name}</h2>
+                <p>₹{product.price}</p>
+                <div className="product-quantity">
+                  <button
+                    className="quantity-btn decrease"
+                    onClick={() => removeFromCart(product.name)}
+                  >
+                    ➖
+                  </button>
+                  <input
+                    type="number"
+                    className="quantity-input"
+                    value={cart[product.name]?.quantity || ""}
+                    onChange={(e) =>
+                      updateQuantity(product, parseInt(e.target.value) || 1)
+                    }
                   />
-                  <h2>{product.name}</h2>
-                  <p>₹{product.price}</p>
-                  <div className="product-quantity">
-                    <button
-                      className="quantity-btn decrease"
-                      onClick={() => removeFromCart(product.name)}
-                    >
-                      ➖
-                    </button>
-                    <input
-                      type="number"
-                      className="quantity-input"
-                      value={cart[product.name]?.quantity || ""}
-                      onChange={(e) =>
-                        updateQuantity(product, parseInt(e.target.value) || 1)
-                      }
-                    />
-                    <button
-                      className="quantity-btn increase"
-                      onClick={() => addToCart(product)}
-                    >
-                      ➕
-                    </button>
-                  </div>
+                  <button
+                    className="quantity-btn increase"
+                    onClick={() => addToCart(product)}
+                  >
+                    ➕
+                  </button>
                 </div>
-              ))}
+              </div>
+            ))}
       </div>
 
       {selectedProduct && (
