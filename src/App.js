@@ -69,6 +69,15 @@ function App() {
           type="text/csv"
           crossOrigin="anonymous"
         />
+        <title>Veer Traders - Wholesale Toy Supplier</title>
+        <meta
+          name="description"
+          content="Buy wholesale toys in bulk at best prices from Veer Traders."
+        />
+        <meta
+          name="keywords"
+          content="veer traders, centy toys, intex toys, wholesaler, toys wholesale, buy toys, bulk toy supplier, kids toys, toy store, toys home, toyzhome, toyshome"
+        />
       </Helmet>
       {/* ✅ Suspense Wrapper for Lazy Loading */}
       <Suspense fallback={<div>Loading Catalog...</div>}>

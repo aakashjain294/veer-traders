@@ -11,7 +11,7 @@ const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) =>
     [product.additionalImages]
   );
 
-  const isInStock = product.quantity > 0;
+  // const isInStock = product.quantity > 0;
 
   // ✅ Update Main Image When Product Changes
   useEffect(() => {
@@ -50,11 +50,9 @@ const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) =>
         <div className="product-info">
           <h2>{product.name}</h2>
           <p>Price: ₹{product.price}</p>
-          <p>Available Quantity: {product.quantity}</p>
+          {/* <p>Available Quantity: {product.quantity}</p> */}
 
-          {!isInStock ? (
-            <p className="out-of-stock">❌ Out of Stock</p>
-          ) : (
+          {(
             <div className="product-quantity">
               <button className="quantity-btn decrease" onClick={() => removeFromCart(product.name)}>
                 ➖
