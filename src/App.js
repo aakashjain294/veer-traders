@@ -76,8 +76,9 @@ function App() {
         />
         <meta
           name="keywords"
-          content="veer traders, centy toys, intex toys, wholesaler, toys wholesale, buy toys, bulk toy supplier, kids toys, toy store, toys home, toyzhome, toyshome"
+          content="veer traders, centy toys, intex toys, Annie Toys, Best toys, Best Wholesaler of Toys, best wholesaler in Delhi, Best wholesaler, Best Price, Wholesale toys, toys wholesale, buy toys, bulk toys supplier, kids toys, toy store, toys home, toyzhome, toyshome, Wholesale toys supplier in Delhi, Best toy wholesalers in India"
         />
+        <meta name="author" content="Veer Traders" />
       </Helmet>
       {/* ✅ Suspense Wrapper for Lazy Loading */}
       <Suspense fallback={<div>Loading Catalog...</div>}>

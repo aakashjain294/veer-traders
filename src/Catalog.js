@@ -180,7 +180,6 @@ const Catalog = () => {
         fetchpriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
-
       <input
         type="text"
         placeholder="Search products..."
@@ -344,6 +343,15 @@ const Catalog = () => {
           </div>
         </div>
       )}
+      <div className="why-choose-us">
+        <h2>Why Choose Us?</h2>
+        <div className="why-choose-us-content">
+          <span>Best Prices</span>
+          <span>Best Quality</span>
+          <span>Fast Delivery</span>
+        </div>
+      </div>
+
       <footer className="footer">
         <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
         <p>
