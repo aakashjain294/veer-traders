@@ -9,7 +9,7 @@
     <link rel="preload" as="image" href="/logo.webp" type="image/webp" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="canonical" href="https://www.veertraders.com/" />
-    <link rel="preload" as="style" href="/styles.css">
+    <link rel="preload" as="style" href="/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -23,7 +23,7 @@
     <meta property="og:image" content="/logo.webp" />
     <meta property="og:url" content="https://www.veertraders.com" />
     <meta property="og:type" content="website" />
->
+    >
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link
@@ -53,9 +53,22 @@
           "https://www.instagram.com/veertraders"
         ]
       }
-      </script>
-      
+    </script>
   </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-DJVK9F9FPR"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-DJVK9F9FPR");
+  </script>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
