@@ -415,12 +415,12 @@ h1 {
   max-width: 100%;
   height: auto;
   cursor: pointer;
-  transition: transform 0.3s ease-in-out;
+  /* transition: transform 0.3s ease-in-out; */
   }
 
-.zoomable-image:hover {
+/* .zoomable-image:hover {
   transform: scale(1.4);
-}
+} */
 
 .product-info {
   flex: 1;
