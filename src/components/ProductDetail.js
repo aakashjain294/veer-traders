@@ -1,13 +1,21 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import "../styles.css";
 
-const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) => {
+const ProductDetail = ({
+  product,
+  onClose,
+  addToCart,
+  removeFromCart,
+  cart,
+}) => {
   const [mainImage, setMainImage] = useState(product.image);
   const [zoomedImage, setZoomedImage] = useState(null);
+  const modalRef = useRef(null); // ✅ Reference for the modal
 
   // ✅ UseMemo to prevent unnecessary recalculations
   const additionalImages = useMemo(
-    () => (Array.isArray(product.additionalImages) ? product.additionalImages : []),
+    () =>
+      Array.isArray(product.additionalImages) ? product.additionalImages : [],
     [product.additionalImages]
   );
 
@@ -28,9 +36,21 @@ const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) =>
     }
   }, [additionalImages]);
 
+  // ✅ Close modal if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
   return (
     <div className="product-detail-overlay">
-      <div className="product-detail-container">
+      <div className="product-detail-container" ref={modalRef}>
         <button className="product-detail-close-btn" onClick={onClose}>
           ❌
         </button>
@@ -52,17 +72,23 @@ const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) =>
           <p>Price: ₹{product.price}</p>
           {/* <p>Available Quantity: {product.quantity}</p> */}
 
-          {(
+          {
             <div className="product-quantity">
-              <button className="quantity-btn decrease" onClick={() => removeFromCart(product.name)}>
+              <button
+                className="quantity-btn decrease"
+                onClick={() => removeFromCart(product.name)}
+              >
                 ➖
               </button>
               <span>{cart[product.name]?.quantity || 0}</span>
-              <button className="quantity-btn increase" onClick={() => addToCart(product)}>
+              <button
+                className="quantity-btn increase"
+                onClick={() => addToCart(product)}
+              >
                 ➕
               </button>
             </div>
-          )}
+          }
 
           {/* Additional Images Section */}
           {additionalImages.length > 0 && (
@@ -87,8 +113,15 @@ const ProductDetail = ({ product, onClose, addToCart, removeFromCart, cart }) =>
 
       {/* Zoom Modal */}
       {zoomedImage && (
-        <div className="zoomed-image-overlay" onClick={() => setZoomedImage(null)}>
-          <img src={zoomedImage} alt="Zoomed Product" className="zoomed-image" />
+        <div
+          className="zoomed-image-overlay"
+          onClick={() => setZoomedImage(null)}
+        >
+          <img
+            src={zoomedImage}
+            alt="Zoomed Product"
+            className="zoomed-image"
+          />
         </div>
       )}
     </div>

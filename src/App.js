@@ -81,7 +81,7 @@ function App() {
         <meta name="author" content="Veer Traders" />
       </Helmet>
       {/* ✅ Suspense Wrapper for Lazy Loading */}
-      <Suspense fallback={<div>Loading Catalog...</div>}>
+      <Suspense >
         <Catalog
           cart={cart}
           addToCart={addToCart}
