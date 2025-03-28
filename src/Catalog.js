@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import "./styles.css";
 import ProductDetail from "./components/ProductDetail";
+
+const ProductGrid = lazy(() => import("./components/ProductGrid")); // Lazy load the grid
 
 const Catalog = () => {
   const [products, setProducts] = useState([]);
@@ -211,12 +213,12 @@ const Catalog = () => {
         ))}
       </select>
 
-      <div className="product-grid">
+      {/* <div className="product-grid">
         {loading
           ? Array.from({ length: 8 }).map(
               (
                 _,
-                index // Skeleton for 6 products
+                index // Skeleton for 8 products
               ) => (
                 <div key={index} className="product-card skeleton">
                   <div className="skeleton-image"></div>
@@ -260,7 +262,18 @@ const Catalog = () => {
                 </div>
               </div>
             ))}
-      </div>
+      </div> */}
+      <Suspense fallback={<div>Loading products...</div>}>
+        <ProductGrid
+          loading={loading}
+          filteredProducts={filteredProducts}
+          cart={cart}
+          setSelectedProduct={setSelectedProduct}
+          addToCart={addToCart}
+          removeFromCart={removeFromCart}
+          updateQuantity={updateQuantity}
+        />
+      </Suspense>
 
       {selectedProduct && (
         <ProductDetail

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { lazy, Suspense } from "react";
+// import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet";
+import Catalog from "./Catalog";
 // ✅ Lazy Load Catalog Component for Faster Load Time
-const Catalog = lazy(() => import("./Catalog"));
+// const Catalog = lazy(() => import("./Catalog"));
 
 function App() {
   // 🛒 Load cart from localStorage efficiently
@@ -69,7 +70,10 @@ function App() {
           type="text/csv"
           crossOrigin="anonymous"
         />
-        <title>Veer Traders | Wholesale Toys Supplier in India – Best Prices & Quality</title>
+        <title>
+          Veer Traders | Wholesale Toys Supplier in India – Best Prices &
+          Quality
+        </title>
         <meta
           name="description"
           content="Veer Traders is a leading wholesale toy supplier in India, specializing in high-quality, affordable toys for retailers, resellers, and businesses. We offer a wide range of toys, including die-cast vehicles, educational toys, inflatable pools, dolls, and more from top brands like Centy, Annie, Intex, Toy Express, and Dolly, etc. Whether you run a toy shop, an online store, or a distribution business, we provide bulk toys at the best wholesale prices with attractive discounts."
@@ -80,14 +84,19 @@ function App() {
         />
         <meta name="author" content="Veer Traders" />
       </Helmet>
-      {/* ✅ Suspense Wrapper for Lazy Loading */}
+      {/* ✅ Suspense Wrapper for Lazy Loading
       <Suspense >
         <Catalog
           cart={cart}
           addToCart={addToCart}
           removeFromCart={removeFromCart}
         />
-      </Suspense>
+      </Suspense> */}
+      <Catalog
+        cart={cart}
+        addToCart={addToCart}
+        removeFromCart={removeFromCart}
+      />
 
       {/* ✅ Optimized Copyright Footer */}
       <footer className="footer">
