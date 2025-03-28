@@ -361,7 +361,7 @@ const Catalog = () => {
         <div className="why-choose-us-content">
           <span>Best Prices</span>
           <span>Best Quality</span>
-          <span>Fast Delivery</span>
+          <span>Best Services</span>
         </div>
       </div>
 
