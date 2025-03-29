@@ -5,6 +5,13 @@ import "../styles.css"; // Ensure global styles are applied
 const AboutUs = () => {
   return (
     <>
+      <img
+        src="/logo.webp"
+        alt="Veer Traders Wholesale Toy Supplier Delhi"
+        className="logo"
+        loading="eager"
+        fetchPriority="high"
+      />
       <Navbar />
       <div className="about-background">
         <div className="about-container">
@@ -24,17 +31,24 @@ const AboutUs = () => {
           <h2>Why Choose Veer Traders?</h2>
           <ul>
             <li>
-              ✅ <strong>Best Wholesale Prices</strong> – Get toys at factory-direct rates.
-            </li>
-            <li>✅ <strong>Top Brands</strong> – Centy, Annie, Intex, Toy Express, and more.</li>
-            <li>
-              ✅ <strong>Fast & Reliable Supply</strong> – Bulk toy orders fulfilled quickly.
+              ✅ <strong>Best Wholesale Prices</strong> – Get toys at
+              factory-direct rates.
             </li>
             <li>
-              ✅ <strong>Wide Product Range</strong> – Die-cast toys, remote cars, dolls, etc.
+              ✅ <strong>Top Brands</strong> – Centy, Annie, Intex, Toy Express,
+              and more.
             </li>
             <li>
-              ✅ <strong>Trusted by 100+ Businesses</strong> – Serving wholesalers & resellers.
+              ✅ <strong>Fast & Reliable Supply</strong> – Bulk toy orders
+              fulfilled quickly.
+            </li>
+            <li>
+              ✅ <strong>Wide Product Range</strong> – Die-cast toys, remote
+              cars, dolls, etc.
+            </li>
+            <li>
+              ✅ <strong>Trusted by 100+ Businesses</strong> – Serving
+              wholesalers & resellers.
             </li>
           </ul>
 
