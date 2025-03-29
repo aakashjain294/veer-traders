@@ -11,7 +11,7 @@ const ProductDetail = ({
   const [mainImage, setMainImage] = useState(product.image);
   const [zoomedImage, setZoomedImage] = useState(null);
   const modalRef = useRef(null); // ✅ Reference for the modal
-  
+
   // ✅ UseMemo to prevent unnecessary recalculations
   const additionalImages = useMemo(
     () =>
@@ -49,7 +49,6 @@ const ProductDetail = ({
   }, [onClose]);
 
   return (
-    
     <div className="product-detail-overlay">
       <div className="product-detail-container" ref={modalRef}>
         <button className="product-detail-close-btn" onClick={onClose}>
@@ -124,6 +123,28 @@ const ProductDetail = ({
           />
         </div>
       )}
+      {/* Product Schema Markup */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          name: product.name,
+          image: [mainImage, ...additionalImages], // Include main and additional images
+          description: product.description || "Check product details",
+          sku: product.id || "N/A", // If you have product ID or SKU
+          brand: {
+            "@type": "Brand",
+            name: product.brand || "Veer Traders",
+          },
+          offers: {
+            "@type": "Offer",
+            url: window.location.href, // Current URL of the product detail page
+            priceCurrency: "INR",
+            price: product.price,
+            availability: "https://schema.org/InStock", // Adjust based on product availability
+          },
+        })}
+      </script>
     </div>
   );
 };

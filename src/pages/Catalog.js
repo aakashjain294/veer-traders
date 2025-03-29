@@ -179,7 +179,7 @@ const Catalog = () => {
         alt="Veer Traders Wholesale Toy Supplier Delhi"
         className="logo"
         loading="eager"
-        fetchpriority="high"
+        fetchPriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
       {/* <h2>Find Wholesale Toys in Delhi</h2> */}
