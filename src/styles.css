@@ -612,12 +612,7 @@ h1 {
 }
 
 .about-container {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Light white overlay for readability */ /* Slight white overlay for readability */
+  background: rgba(255, 255, 255, 0.842); /* Light white overlay for readability */ /* Slight white overlay for readability */
   padding: 30px;
   border-radius: 10px;
   max-width: 900px;
