@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { BrowserRouter as Router, Routes, Route  } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import Catalog from "./pages/Catalog";
 import AboutUs from "./pages/AboutUs"; // Import About Us page
@@ -69,18 +69,20 @@ function App() {
           type="text/csv"
           crossOrigin="anonymous"
         />
-        <title>
-          Veer Traders | Wholesale Toys Supplier in India – Best Prices &
-          Quality
-        </title>
-        <meta
-          name="description"
-          content="Veer Traders is a leading wholesale toy supplier in India, specializing in high-quality, affordable toys for retailers, resellers, and businesses. We offer a wide range of toys, including die-cast vehicles, educational toys, inflatable pools, dolls, and more from top brands like Centy, Annie, Intex, Toy Express, and Dolly, etc. Whether you run a toy shop, an online store, or a distribution business, we provide bulk toys at the best wholesale prices with attractive discounts."
-        />
-        <meta
-          name="keywords"
-          content="veer traders, Veer Traders, veer trader, Veer Trader, Veer traders, centy toys, intex toys, Annie Toys, Best toys, Best Wholesaler of Toys, best wholesaler in Delhi, Best wholesaler, Best Price, Wholesale toys, toys wholesale, buy toys, bulk toys supplier, kids toys, toy store, toys home, toyzhome, toyshome, Wholesale toys supplier in Delhi, Best toy wholesalers in India, wholesale toy supplier, bulk toy wholesaler, best toy wholesalers in delhi, buy toys in bulk, wholesale kids' toys, Centy toys wholesaler, Annie toys distributor, Intex pool wholesaler, Toy Express supplier, Dolly doll wholesaler, centy, toyzhome, toy express, doll house, die cast toys, metal toys, remote car, remote control car, building blocks, educational toys"
-        />
+        <Helmet>
+          <title>
+            Veer Traders | Wholesale Toys Supplier in Delhi & India – Best
+            Prices
+          </title>
+          <meta
+            name="description"
+            content="Veer Traders: Your top wholesale toy supplier in Delhi & India. Get bulk toys at best prices. Wide range: Centy, Annie, Intex. Serving retailers & businesses."
+          />
+          <meta
+            name="keywords"
+            content="wholesale toys Delhi, wholesale toy suppliers India, bulk toys, Centy toys wholesale, best toy wholesalers Delhi, Veer Traders"
+          />
+        </Helmet>
         <meta name="author" content="Veer Traders" />
       </Helmet>
       <Routes>

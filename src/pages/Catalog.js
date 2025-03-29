@@ -176,13 +176,14 @@ const Catalog = () => {
     <div className="container">
       <img
         src="/logo.webp"
-        alt="Veer Traders Logo"
+        alt="Veer Traders Wholesale Toy Supplier Delhi"
         className="logo"
         loading="eager"
         fetchpriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
-      
+      {/* <h2>Find Wholesale Toys in Delhi</h2> */}
+
       {/* ✅ Move Navbar Below the Heading */}
       <Navbar />
 
@@ -310,7 +311,7 @@ const Catalog = () => {
           </div>
         </div>
       )}
-      
+
       <footer className="footer">
         <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
         <p>

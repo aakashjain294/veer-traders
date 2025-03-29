@@ -11,7 +11,7 @@ const ProductDetail = ({
   const [mainImage, setMainImage] = useState(product.image);
   const [zoomedImage, setZoomedImage] = useState(null);
   const modalRef = useRef(null); // ✅ Reference for the modal
-
+  
   // ✅ UseMemo to prevent unnecessary recalculations
   const additionalImages = useMemo(
     () =>
@@ -49,12 +49,12 @@ const ProductDetail = ({
   }, [onClose]);
 
   return (
+    
     <div className="product-detail-overlay">
       <div className="product-detail-container" ref={modalRef}>
         <button className="product-detail-close-btn" onClick={onClose}>
           ❌
         </button>
-
         {/* Left Side - Main Image with Zoom on Click */}
         <div className="product-image-container">
           <img
@@ -97,11 +97,11 @@ const ProductDetail = ({
               <div className="image-thumbnails">
                 {additionalImages.map((img, index) => (
                   <img
+                    loading="lazy"
                     key={index}
                     src={img}
-                    alt="Additional view"
+                    alt={`${product.name} - Additional View ${index + 1}`}
                     className="thumbnail"
-                    loading="lazy"
                     onClick={() => setMainImage(img)}
                   />
                 ))}
