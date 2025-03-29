@@ -1,8 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import "./styles.css";
-import ProductDetail from "./components/ProductDetail";
-
-const ProductGrid = lazy(() => import("./components/ProductGrid")); // Lazy load the grid
+import "../styles.css";
+import ProductDetail from "../components/ProductDetail";
+import Navbar from "../components/Navbar"; // ✅ Import Navbar
+const ProductGrid = lazy(() => import("../components/ProductGrid")); // Lazy load the grid
 
 const Catalog = () => {
   const [products, setProducts] = useState([]);
@@ -182,6 +182,10 @@ const Catalog = () => {
         fetchpriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
+      
+      {/* ✅ Move Navbar Below the Heading */}
+      <Navbar />
+
       <input
         type="text"
         placeholder="Search products..."
@@ -213,56 +217,6 @@ const Catalog = () => {
         ))}
       </select>
 
-      {/* <div className="product-grid">
-        {loading
-          ? Array.from({ length: 8 }).map(
-              (
-                _,
-                index // Skeleton for 8 products
-              ) => (
-                <div key={index} className="product-card skeleton">
-                  <div className="skeleton-image"></div>
-                  <div className="skeleton-text"></div>
-                  <div className="skeleton-text small"></div>
-                  <div className="skeleton-btn"></div>
-                </div>
-              )
-            )
-          : filteredProducts.map((product, index) => (
-              <div key={index} className="product-card">
-                <img
-                  loading="lazy"
-                  src={product.image}
-                  alt={product.name}
-                  onClick={() => setSelectedProduct(product)}
-                />
-                <h2>{product.name}</h2>
-                <p>₹{product.price}</p>
-                <div className="product-quantity">
-                  <button
-                    className="quantity-btn decrease"
-                    onClick={() => removeFromCart(product.name)}
-                  >
-                    ➖
-                  </button>
-                  <input
-                    type="number"
-                    className="quantity-input"
-                    value={cart[product.name]?.quantity || ""}
-                    onChange={(e) =>
-                      updateQuantity(product, parseInt(e.target.value) || 1)
-                    }
-                  />
-                  <button
-                    className="quantity-btn increase"
-                    onClick={() => addToCart(product)}
-                  >
-                    ➕
-                  </button>
-                </div>
-              </div>
-            ))}
-      </div> */}
       <Suspense fallback={<div>Loading products...</div>}>
         <ProductGrid
           loading={loading}
@@ -356,15 +310,7 @@ const Catalog = () => {
           </div>
         </div>
       )}
-      <div className="why-choose-us">
-        <h2>Why Choose Us?</h2>
-        <div className="why-choose-us-content">
-          <span>Best Prices</span>
-          <span>Best Quality</span>
-          <span>Best Services</span>
-        </div>
-      </div>
-
+      
       <footer className="footer">
         <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
         <p>

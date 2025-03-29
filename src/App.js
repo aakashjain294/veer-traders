@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-// import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route  } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Catalog from "./Catalog";
-// ✅ Lazy Load Catalog Component for Faster Load Time
-// const Catalog = lazy(() => import("./Catalog"));
+import Catalog from "./pages/Catalog";
+import AboutUs from "./pages/AboutUs"; // Import About Us page
 
 function App() {
   // 🛒 Load cart from localStorage efficiently
@@ -61,7 +60,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <Router>
       <Helmet>
         <link
           rel="preload"
@@ -84,25 +83,25 @@ function App() {
         />
         <meta name="author" content="Veer Traders" />
       </Helmet>
-      {/* ✅ Suspense Wrapper for Lazy Loading
-      <Suspense >
-        <Catalog
-          cart={cart}
-          addToCart={addToCart}
-          removeFromCart={removeFromCart}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Catalog
+              cart={cart}
+              addToCart={addToCart}
+              removeFromCart={removeFromCart}
+            />
+          }
         />
-      </Suspense> */}
-      <Catalog
-        cart={cart}
-        addToCart={addToCart}
-        removeFromCart={removeFromCart}
-      />
+        <Route path="/about" element={<AboutUs />} />
+      </Routes>
 
       {/* ✅ Optimized Copyright Footer */}
       <footer className="footer">
         &copy; {new Date().getFullYear()} Veer Traders. All Rights Reserved.
       </footer>
-    </div>
+    </Router>
   );
 }
 
