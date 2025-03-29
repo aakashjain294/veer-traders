@@ -24,17 +24,17 @@ const AboutUs = () => {
           <h2>Why Choose Veer Traders?</h2>
           <ul>
             <li>
-              ✅ Best Wholesale Prices – Get toys at factory-direct rates.
+              ✅ <strong>Best Wholesale Prices</strong> – Get toys at factory-direct rates.
             </li>
-            <li>✅ Top Brands – Centy, Annie, Intex, Toy Express, and more.</li>
+            <li>✅ <strong>Top Brands</strong> – Centy, Annie, Intex, Toy Express, and more.</li>
             <li>
-              ✅ Fast & Reliable Supply – Bulk toy orders fulfilled quickly.
-            </li>
-            <li>
-              ✅ Wide Product Range – Die-cast toys, remote cars, dolls, etc.
+              ✅ <strong>Fast & Reliable Supply</strong> – Bulk toy orders fulfilled quickly.
             </li>
             <li>
-              ✅ Trusted by 100+ Businesses – Serving wholesalers & resellers.
+              ✅ <strong>Wide Product Range</strong> – Die-cast toys, remote cars, dolls, etc.
+            </li>
+            <li>
+              ✅ <strong>Trusted by 100+ Businesses</strong> – Serving wholesalers & resellers.
             </li>
           </ul>
 
