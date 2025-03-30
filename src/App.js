@@ -2,11 +2,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
-// import Catalog from "./pages/Catalog";
-// import AboutUs from "./pages/AboutUs"; // Import About Us page
-// import Blog from "./pages/Blog";// Import Blog
+import Catalog from "./pages/Catalog";
 
-const Catalog = lazy(() => import("./pages/Catalog"));
 const AboutUs = lazy(() => import("./pages/AboutUs")); // Load About Us page lazil
 const Blog = lazy(() => import("./pages/Blog")); // Load About Us page lazil
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import "../styles.css";
 import ProductDetail from "../components/ProductDetail";
 import Navbar from "../components/Navbar"; // ✅ Import Navbar
+
 const ProductGrid = lazy(() => import("../components/ProductGrid")); // Lazy load the grid
 
 const Catalog = () => {
