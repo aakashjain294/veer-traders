@@ -116,11 +116,7 @@ const ProductDetail = ({
           className="zoomed-image-overlay"
           onClick={() => setZoomedImage(null)}
         >
-          <img
-            src={zoomedImage}
-            alt="Zoomed Product"
-            className="zoomed-image"
-          />
+          <img src={zoomedImage} alt={product.name} className="zoomed-image" />
         </div>
       )}
       {/* Product Schema Markup */}

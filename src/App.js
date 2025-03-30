@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Catalog from "./pages/Catalog";
-import AboutUs from "./pages/AboutUs"; // Import About Us page
+import { lazy, Suspense } from "react";
+// import Catalog from "./pages/Catalog";
+// import AboutUs from "./pages/AboutUs"; // Import About Us page
+// import Blog from "./pages/Blog";// Import Blog
+
+const Catalog = lazy(() => import("./pages/Catalog"));
+const AboutUs = lazy(() => import("./pages/AboutUs")); // Load About Us page lazil
+const Blog = lazy(() => import("./pages/Blog")); // Load About Us page lazil
 
 function App() {
   // 🛒 Load cart from localStorage efficiently
@@ -69,35 +75,35 @@ function App() {
           type="text/csv"
           crossOrigin="anonymous"
         />
-        <Helmet>
-          <title>
-            Veer Traders | Wholesale Toys Supplier in Delhi & India – Best
-            Prices
-          </title>
-          <meta
-            name="description"
-            content="Veer Traders: Your top wholesale toy supplier in Delhi & India. Get bulk toys at best prices. Wide range: Centy, Annie, Intex. Serving retailers & businesses."
-          />
-          <meta
-            name="keywords"
-            content="wholesale toys Delhi, wholesale toy suppliers India, bulk toys, Centy toys wholesale, best toy wholesalers Delhi, Veer Traders"
-          />
-        </Helmet>
+        <title>
+          Veer Traders | Wholesale Toys Supplier in Delhi & India – Best Prices
+        </title>
+        <meta
+          name="description"
+          content="Veer Traders: Your top wholesale toy supplier in Delhi & India. Get bulk toys at best prices. Wide range: Centy, Annie, Intex. Serving retailers & businesses."
+        />
+        <meta
+          name="keywords"
+          content="wholesale toys Delhi, wholesale toy suppliers India, bulk toys, Centy toys wholesale, best toy wholesalers Delhi, Veer Traders"
+        />
         <meta name="author" content="Veer Traders" />
       </Helmet>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Catalog
-              cart={cart}
-              addToCart={addToCart}
-              removeFromCart={removeFromCart}
-            />
-          }
-        />
-        <Route path="/about" element={<AboutUs />} />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Catalog
+                cart={cart}
+                addToCart={addToCart}
+                removeFromCart={removeFromCart}
+              />
+            }
+          />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/blog" element={<Blog />} />
+        </Routes>
+      </Suspense>
 
       {/* ✅ Optimized Copyright Footer */}
       <footer className="footer">

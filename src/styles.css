@@ -644,3 +644,35 @@ h1 {
   text-align: left;
   display: inline-block;
 }
+.blog-container {
+  padding: 20px;
+}
+
+.blog-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.blog-posts {
+  margin-top: 20px;
+}
+
+.blog-post {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.blog-post h2 {
+  margin-bottom: 10px;
+}
+
+.blog-post p {
+  line-height: 1.6;
+}
+
+.blog-post img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+}
