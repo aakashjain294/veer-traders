@@ -241,6 +241,7 @@ const Catalog = () => {
       )}
 
       <button
+        aria-label="View Your Order"
         className="floating-summary-btn"
         onClick={() => setShowSummary(true)}
       >
@@ -249,7 +250,11 @@ const Catalog = () => {
 
       {/* Scroll to Top Button */}
       {showScrollButton && (
-        <button className="scroll-to-top" onClick={scrollToTop}>
+        <button
+          aria-label="Scroll to Top"
+          className="scroll-to-top"
+          onClick={scrollToTop}
+        >
           🔼
         </button>
       )}
@@ -269,6 +274,7 @@ const Catalog = () => {
                 </p>
                 <div className="cart-quantity">
                   <button
+                    aria-label="Decrease quantity"
                     className="quantity-btn decrease"
                     onClick={() => updateQuantity(item, item.quantity - 1)}
                   >
@@ -283,6 +289,7 @@ const Catalog = () => {
                     }
                   />
                   <button
+                    aria-label="Increase quantity"
                     className="quantity-btn increase"
                     onClick={() => updateQuantity(item, item.quantity + 1)}
                   >
@@ -299,13 +306,25 @@ const Catalog = () => {
                 0
               )}
             </h3>
-            <button className="order-btn" onClick={generateWhatsAppMessage}>
+            <button
+              aria-label="Order Now"
+              className="order-btn"
+              onClick={generateWhatsAppMessage}
+            >
               📦 Order on WhatsApp
             </button>
-            <button className="empty-cart-btn" onClick={() => setCart({})}>
+            <button
+              aria-label="Empty Cart"
+              className="empty-cart-btn"
+              onClick={() => setCart({})}
+            >
               🗑️ Empty Cart
             </button>
-            <button className="close-btn" onClick={() => setShowSummary(false)}>
+            <button
+              aria-label="close"
+              className="close-btn"
+              onClick={() => setShowSummary(false)}
+            >
               ❌ Close
             </button>
           </div>

@@ -51,7 +51,7 @@ const ProductDetail = ({
   return (
     <div className="product-detail-overlay">
       <div className="product-detail-container" ref={modalRef}>
-        <button className="product-detail-close-btn" onClick={onClose}>
+        <button aria-label="close" className="product-detail-close-btn" onClick={onClose}>
           ❌
         </button>
         {/* Left Side - Main Image with Zoom on Click */}
@@ -74,6 +74,7 @@ const ProductDetail = ({
           {
             <div className="product-quantity">
               <button
+                aria-label="Decrease quantity"
                 className="quantity-btn decrease"
                 onClick={() => removeFromCart(product.name)}
               >
@@ -81,6 +82,7 @@ const ProductDetail = ({
               </button>
               <span>{cart[product.name]?.quantity || 0}</span>
               <button
+                aria-label="Increase quantity"
                 className="quantity-btn increase"
                 onClick={() => addToCart(product)}
               >
