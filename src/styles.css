@@ -77,12 +77,12 @@ h1 {
   text-align: center;
 }
 
-.skeleton-image {
+/* .skeleton-image {
   width: 100%;
   height: 200px;
   background: #ffdada;
   border-radius: 5px;
-}
+} */
 
 .skeleton-text {
   height: 20px;
@@ -372,6 +372,7 @@ h1 {
   justify-content: center;
   align-items: center;
   text-align: center;
+  object-fit: contain;
 }
 
 .zoomable-image {
@@ -738,4 +739,64 @@ h1 {
   max-width: 100%;
   height: auto;
   margin: 15px 0;
+}
+
+/* Skeleton Loading Styles */
+.blog-card.skeleton {
+  cursor: default;
+  pointer-events: none;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.skeleton-excerpt {
+  height: 60px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Error Message Styles */
+.error-message {
+  background: #ffebee;
+  border-left: 4px solid #f44336;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+.error-message button {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.error-message button:hover {
+  background: #d32f2f;
+}
+
+.error-details {
+  color: #666;
+  font-size: 0.8rem;
+  margin-top: 10px;
 }
