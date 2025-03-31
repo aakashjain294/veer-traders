@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import Navbar from "../components/Navbar";
 import "../styles.css";
@@ -8,6 +8,25 @@ const Blog = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const modalRef = useRef(null);
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        selectedPost &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target)
+      ) {
+        setSelectedPost(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedPost]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -54,9 +73,11 @@ const Blog = () => {
           fetchPriority="high"
         />
         <Navbar />
-        
-        {/* Ensure h1 always has content */}
-        <h1>{loading ? "Loading Blog Posts..." : "Latest Blog Posts"}</h1>
+
+        {/* Centered Heading */}
+        <div className="heading-container">
+          <h1>{loading ? "Loading Blog Posts..." : "Latest Blog Posts"}</h1>
+        </div>
 
         {error ? (
           <div className="error-message">
@@ -65,43 +86,48 @@ const Blog = () => {
           </div>
         ) : (
           <div className="blog-grid">
-            {loading ? (
-              Array(2).fill().map((_, index) => (
-                <div key={`skeleton-${index}`} className="blog-card skeleton">
-                  <div className="skeleton-image"></div>
-                  {/* Ensure heading has accessible content */}
-                  <h2>
-                    <span className="sr-only">Loading post</span>
-                    <span className="skeleton-text"></span>
-                  </h2>
-                  <p className="skeleton-date"></p>
-                  <p className="skeleton-excerpt"></p>
-                </div>
-              ))
-            ) : (
-              posts.map((post) => (
-                <div
-                  key={post.slug || post.title}
-                  className="blog-card"
-                  onClick={() => setSelectedPost(post)}
-                >
-                  {post.image && (
-                    <img src={post.image} alt={post.title} loading="lazy" />
-                  )}
-                  {/* Ensure heading always has text content */}
-                  <h2>{post.title || "Untitled Post"}</h2>
-                  {post.date && <p className="post-date">{post.date}</p>}
-                  {post.excerpt && <p className="post-excerpt">{post.excerpt}</p>}
-                </div>
-              ))
-            )}
+            {loading
+              ? Array(2)
+                  .fill()
+                  .map((_, index) => (
+                    <div
+                      key={`skeleton-${index}`}
+                      className="blog-card skeleton"
+                    >
+                      <div className="skeleton-image"></div>
+                      {/* Ensure heading has accessible content */}
+                      <h2>
+                        <span className="sr-only">Loading post</span>
+                        <span className="skeleton-text"></span>
+                      </h2>
+                      <p className="skeleton-date"></p>
+                      <p className="skeleton-excerpt"></p>
+                    </div>
+                  ))
+              : posts.map((post) => (
+                  <div
+                    key={post.slug || post.title}
+                    className="blog-card"
+                    onClick={() => setSelectedPost(post)}
+                  >
+                    {post.image && (
+                      <img src={post.image} alt={post.title} loading="lazy" />
+                    )}
+                    {/* Ensure heading always has text content */}
+                    <h2>{post.title || "Untitled Post"}</h2>
+                    {post.date && <p className="post-date">{post.date}</p>}
+                    {post.excerpt && (
+                      <p className="post-excerpt">{post.excerpt}</p>
+                    )}
+                  </div>
+                ))}
           </div>
         )}
 
         {/* Modal with accessible headings */}
         {selectedPost && (
           <div className="post-modal">
-            <div className="modal-content">
+            <div className="modal-content" ref={modalRef}>
               <button
                 className="close-button"
                 onClick={() => setSelectedPost(null)}
@@ -114,9 +140,9 @@ const Blog = () => {
                 <p className="post-date">{selectedPost.date}</p>
               )}
               {selectedPost.image && (
-                <img 
-                  src={selectedPost.image} 
-                  alt={selectedPost.title || ""} 
+                <img
+                  src={selectedPost.image}
+                  alt={selectedPost.title || ""}
                   aria-hidden={!selectedPost.title}
                 />
               )}

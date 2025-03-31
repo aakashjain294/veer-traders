@@ -714,6 +714,13 @@ h1 {
   padding: 30px;
   border-radius: 10px;
   position: relative;
+  /* Add pointer-events: none to allow clicks through to backdrop */
+  pointer-events: none;
+}
+
+/* Make content inside modal interactive */
+.modal-content > * {
+  pointer-events: auto;
 }
 
 .close-button {
@@ -728,6 +735,7 @@ h1 {
   border-radius: 50%;
   font-size: 1.2rem;
   cursor: pointer;
+  z-index: 1001;
 }
 
 .post-content {
@@ -813,7 +821,17 @@ h1 {
   border-width: 0;
 }
 
-/* Keep your existing styles... */
+/* Center the heading */
+.heading-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.heading-container h1 {
+  color: #004aad; /* Match your existing heading color */
+  font-size: 2rem; /* Adjust size as needed */
+  font-weight: 700; /* Match your existing heading weight */
+}
 
 /* Error Message Styles */
 .error-message {
