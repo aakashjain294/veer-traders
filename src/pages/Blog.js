@@ -15,20 +15,20 @@ const Blog = () => {
         const response = await fetch(
           "https://script.google.com/macros/s/AKfycbwuiOiPWjyHMv4itq7xSpWszh5bdGWt5UmDAg6bgIiwaQnS1674yv-oSYZFzAy9_0Au/exec"
         );
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Debugging log - check your console
-        console.log("Fetched posts:", data); 
-        
+        console.log("Fetched posts:", data);
+
         if (!Array.isArray(data)) {
           throw new Error("Expected array but got: " + typeof data);
         }
-        
+
         setPosts(data);
       } catch (err) {
         console.error("Fetch error:", err);
@@ -51,6 +51,13 @@ const Blog = () => {
       </Helmet>
 
       <div className="blog-container">
+        <img
+          src="/logo.webp"
+          alt="Veer Traders Wholesale Toy Supplier Delhi"
+          className="logo"
+          loading="eager"
+          fetchPriority="high"
+        />
         <Navbar />
         <h1>Latest Blog Posts</h1>
 
@@ -65,11 +72,7 @@ const Blog = () => {
                 onClick={() => setSelectedPost(post)}
               >
                 {post.image && (
-                  <img 
-                    src={post.image} 
-                    alt={post.title} 
-                    loading="lazy"
-                  />
+                  <img src={post.image} alt={post.title} loading="lazy" />
                 )}
                 <h2>{post.title}</h2>
                 {post.date && <p className="post-date">{post.date}</p>}
@@ -89,12 +92,11 @@ const Blog = () => {
                 &times;
               </button>
               <h2>{selectedPost.title}</h2>
-              {selectedPost.date && <p className="post-date">{selectedPost.date}</p>}
+              {selectedPost.date && (
+                <p className="post-date">{selectedPost.date}</p>
+              )}
               {selectedPost.image && (
-                <img 
-                  src={selectedPost.image} 
-                  alt={selectedPost.title}
-                />
+                <img src={selectedPost.image} alt={selectedPost.title} />
               )}
               {selectedPost.content && (
                 <div
