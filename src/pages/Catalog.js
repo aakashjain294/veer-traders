@@ -4,6 +4,8 @@ import ProductDetail from "../components/ProductDetail";
 import Navbar from "../components/Navbar"; // ✅ Import Navbar
 
 const ProductGrid = lazy(() => import("../components/ProductGrid")); // Lazy load the grid
+const PRODUCTS_CACHE_KEY = "veertraders_products";
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 const Catalog = () => {
   const [products, setProducts] = useState([]);
@@ -16,7 +18,7 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
   const [brandFilter, setBrandFilter] = useState(""); // New Brand Filter State
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbx7U2I-MB9oDhZtc-kYGj1NZjc3nBiJIkUMBWm18J0d6_1h0Y9roDukVQfiXUjyD-FaIA/exec";
+    "https://script.google.com/macros/s/AKfycbyOCgFOtA16SVIJLahjPlGsPQPrG2ZV20FM_3SOWEqzkiaad_io4ITEulejjs4fBUuvjQ/exec";
 
   // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
@@ -24,18 +26,43 @@ const Catalog = () => {
     try {
       setLoading(true);
       // console.log("Fetching data from:", API_URL);
+      // Check cache first
+      const cached = localStorage.getItem(PRODUCTS_CACHE_KEY);
+      const cacheTime = localStorage.getItem(`${PRODUCTS_CACHE_KEY}_time`);
 
-      const response = await fetch(API_URL);
+      if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
+        setProducts(JSON.parse(cached));
+        setLoading(false);
+        return;
+      }
+
+      // Fetch with timeout
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      const response = await fetch(API_URL, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json();
       // console.log("Fetched Products Data:", data); // Debugging log
+      // Update cache
+      localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(data));
+      localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
 
       if (!Array.isArray(data)) throw new Error("Invalid data format received");
 
       setProducts(data);
     } catch (error) {
+      console.error("Error fetching products:", error);
+      const staleCache = localStorage.getItem(PRODUCTS_CACHE_KEY);
+      if (staleCache) {
+        setProducts(JSON.parse(staleCache));
+      }
       // console.error("Error fetching products:", error);
     } finally {
       setLoading(false);

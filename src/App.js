@@ -4,13 +4,17 @@ import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
 import Catalog from "./pages/Catalog";
 
-const AboutUs = lazy(() => import("./pages/AboutUs")); // Load About Us page lazil
-const Blog = lazy(() => import("./pages/Blog")); // Load About Us page lazil
+// Define constants at the top
+const PRODUCTS_API_URL = "https://script.google.com/macros/s/AKfycbx7U2I-MB9oDhZtc-kYGj1NZjc3nBiJIkUMBWm18J0d6_1h0Y9roDukVQfiXUjyD-FaIA/exec";
+const BLOG_API_URL = "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec";
+const PRODUCTS_CACHE_KEY = "veertraders_products";
+const BLOG_CACHE_KEY = "blog_posts_client";
+
+const AboutUs = lazy(() => import("./pages/AboutUs"));
+const Blog = lazy(() => import("./pages/Blog"));
 
 function App() {
-  // 🛒 Load cart from localStorage efficiently
   const cartRef = useRef({});
-
   const [cart, setCart] = useState(() => {
     try {
       const savedCart = localStorage.getItem("cart");
@@ -22,35 +26,58 @@ function App() {
   });
 
   useEffect(() => {
-    // Prefetch blog data when idle
-    const prefetchBlogData = () => {
+    // Combined prefetch function for both products and blog
+    const prefetchData = () => {
       if ("requestIdleCallback" in window) {
         requestIdleCallback(() => {
-          fetch(
-            "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec"
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              localStorage.setItem("blog_posts_client", JSON.stringify(data));
-              localStorage.setItem("blog_posts_client_time", Date.now());
-            });
+          // Prefetch products
+          fetch(PRODUCTS_API_URL)
+            .then(res => res.json())
+            .then(data => {
+              localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(data));
+              localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
+            })
+            .catch(console.error);
+
+          // Prefetch blog
+          fetch(BLOG_API_URL)
+            .then(res => res.json())
+            .then(data => {
+              localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(data));
+              localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
+            })
+            .catch(console.error);
         });
+      } else {
+        // Fallback if requestIdleCallback isn't supported
+        Promise.all([
+          fetch(PRODUCTS_API_URL),
+          fetch(BLOG_API_URL)
+        ]).then(async ([productsRes, blogRes]) => {
+          const productsData = await productsRes.json();
+          const blogData = await blogRes.json();
+          
+          localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(productsData));
+          localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
+          localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(blogData));
+          localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
+        }).catch(console.error);
       }
     };
 
     // Prefetch when route changes or on mount
     const handleRouteChange = () => {
-      if (window.location.pathname === "/blog") return;
-      prefetchBlogData();
+      if (window.location.pathname === "/") return;
+      prefetchData();
     };
 
     window.addEventListener("popstate", handleRouteChange);
-    prefetchBlogData();
+    prefetchData(); // Initial prefetch
 
     return () => window.removeEventListener("popstate", handleRouteChange);
   }, []);
 
-  // ✅ Save cart to localStorage efficiently
+  // Cart persistence
   useEffect(() => {
     try {
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -60,30 +87,24 @@ function App() {
     }
   }, [cart]);
 
-  // 🛒 Function to add product to cart (optimized with `useCallback`)
+  // Cart functions
   const addToCart = useCallback((productId, productName, productPrice) => {
-    setCart((prevCart) => {
-      const newCart = { ...prevCart };
-      if (newCart[productId]) {
-        newCart[productId].quantity += 1;
-      } else {
-        newCart[productId] = {
-          name: productName,
-          price: productPrice,
-          quantity: 1,
-        };
+    setCart(prevCart => ({
+      ...prevCart,
+      [productId]: {
+        name: productName,
+        price: productPrice,
+        quantity: (prevCart[productId]?.quantity || 0) + 1
       }
-      return newCart;
-    });
+    }));
   }, []);
 
-  // 🛒 Function to remove product from cart (optimized with `useCallback`)
   const removeFromCart = useCallback((productId) => {
-    setCart((prevCart) => {
+    setCart(prevCart => {
       const newCart = { ...prevCart };
       if (newCart[productId]) {
         newCart[productId].quantity -= 1;
-        if (newCart[productId].quantity === 0) {
+        if (newCart[productId].quantity <= 0) {
           delete newCart[productId];
         }
       }
@@ -114,6 +135,7 @@ function App() {
         />
         <meta name="author" content="Veer Traders" />
       </Helmet>
+      
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route
@@ -131,7 +153,6 @@ function App() {
         </Routes>
       </Suspense>
 
-      {/* ✅ Optimized Copyright Footer */}
       <footer className="footer">
         &copy; {new Date().getFullYear()} Veer Traders. All Rights Reserved.
       </footer>
