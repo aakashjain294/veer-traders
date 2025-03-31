@@ -10,6 +10,60 @@ const Blog = () => {
   const [error, setError] = useState(null);
   const modalRef = useRef(null);
 
+  useEffect(() => {
+    const CACHE_KEY = "blog_posts_client";
+    const CACHE_DURATION = 3600000; // 1 hour
+
+    const fetchPosts = async () => {
+      try {
+        // Check cache first
+        const cached = localStorage.getItem(CACHE_KEY);
+        const cacheTime = localStorage.getItem(`${CACHE_KEY}_time`);
+
+        if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
+          setPosts(JSON.parse(cached));
+          setLoading(false);
+          return;
+        }
+
+        // Fetch with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(
+          "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec",
+          {
+            signal: controller.signal,
+            redirect: "follow",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        clearTimeout(timeout);
+
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
+        const data = await response.json();
+
+        // Update cache
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(`${CACHE_KEY}_time`, Date.now());
+
+        setPosts(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,36 +81,6 @@ const Blog = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedPost]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(
-          "https://script.google.com/macros/s/AKfycbxRiIivW8WsC-CoWWnrWroEo8YGAwv9un6_w0KAOcpR3ZX087l2lWb7PKb8BMOWQ2I7/exec"
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Fetched posts:", data);
-
-        if (!Array.isArray(data)) {
-          throw new Error("Expected array but got: " + typeof data);
-        }
-
-        setPosts(data);
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
 
   return (
     <>

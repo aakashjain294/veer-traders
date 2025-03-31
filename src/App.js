@@ -21,6 +21,35 @@ function App() {
     }
   });
 
+  useEffect(() => {
+    // Prefetch blog data when idle
+    const prefetchBlogData = () => {
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(() => {
+          fetch(
+            "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec"
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              localStorage.setItem("blog_posts_client", JSON.stringify(data));
+              localStorage.setItem("blog_posts_client_time", Date.now());
+            });
+        });
+      }
+    };
+
+    // Prefetch when route changes or on mount
+    const handleRouteChange = () => {
+      if (window.location.pathname === "/blog") return;
+      prefetchBlogData();
+    };
+
+    window.addEventListener("popstate", handleRouteChange);
+    prefetchBlogData();
+
+    return () => window.removeEventListener("popstate", handleRouteChange);
+  }, []);
+
   // ✅ Save cart to localStorage efficiently
   useEffect(() => {
     try {
