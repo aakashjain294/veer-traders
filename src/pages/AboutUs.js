@@ -62,6 +62,8 @@ const AboutUs = () => {
           </p>
           <p>
             📞 Contact: <a href="tel:+919910667810">+91 9910667810</a>
+            📞 Contact: <a href="tel:+918851308716">+91 8851308716</a>
+            📞 Contact: <a href="tel:+919810853878">+91 9810853878</a>
           </p>
         </div>
       </div>

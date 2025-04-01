@@ -11,8 +11,10 @@ const Blog = () => {
   const modalRef = useRef(null);
 
   // Static meta description and keywords
-  const metaDescription = "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
-  const metaKeywords = "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
+  const metaDescription =
+    "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
+  const metaKeywords =
+    "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
 
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
@@ -91,7 +93,11 @@ const Blog = () => {
   // Update URL when opening modal
   const handlePostClick = (post) => {
     setSelectedPost(post);
-    window.history.pushState(null, "", `/blog/${post.slug || encodeURIComponent(post.title)}`);
+    window.history.pushState(
+      null,
+      "",
+      `/blog/${post.slug || encodeURIComponent(post.title)}`
+    );
   };
 
   // Generate structured data for blog posts
@@ -116,7 +122,9 @@ const Blog = () => {
         headline: post.title || "Untitled Post",
         description: post.excerpt || metaDescription,
         datePublished: post.date || new Date().toISOString(),
-        url: `https://veertraders.com/blog/${post.slug || encodeURIComponent(post.title)}`,
+        url: `https://veertraders.com/blog/${
+          post.slug || encodeURIComponent(post.title)
+        }`,
         image: post.image || "https://veertraders.com/default-blog-image.webp",
       })),
     };
@@ -149,7 +157,10 @@ const Blog = () => {
           content="Veer Traders Blog - Wholesale Toy Supplier Insights"
         />
         <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content="https://veertraders.com/logo.webp" />
+        <meta
+          name="twitter:image"
+          content="https://veertraders.com/logo.webp"
+        />
         <link rel="canonical" href={window.location.href} />
         {generateStructuredData()}
       </Helmet>
@@ -227,7 +238,7 @@ const Blog = () => {
                           {post.excerpt}
                         </p>
                       )}
-                      <button 
+                      <button
                         className="read-more-btn"
                         aria-label={`Read more about ${post.title}`}
                       >
@@ -278,6 +289,20 @@ const Blog = () => {
             </div>
           </div>
         )}
+        <footer className="footer">
+          <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
+          <p>
+            📧 Email:{" "}
+            <a href="mailto:veertraders244246@gmail.com">
+              veertraders244246@gmail.com
+            </a>
+          </p>
+          <p>
+            📞 Contact: <a href="tel:+919910667810">+91 9910667810</a>
+            📞 Contact: <a href="tel:+918851308716">+91 8851308716</a>
+            📞 Contact: <a href="tel:+919810853878">+91 9810853878</a>
+          </p>
+        </footer>
       </div>
     </>
   );
