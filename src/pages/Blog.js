@@ -290,7 +290,7 @@ const Blog = () => {
           </div>
         )}
         <footer className="footer">
-          <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
+          <p>📍 Address: Chhota Bazar, Shahdara, Delhi-32</p>
           <p>
             📧 Email:{" "}
             <a href="mailto:veertraders244246@gmail.com">

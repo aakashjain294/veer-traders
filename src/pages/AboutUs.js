@@ -53,7 +53,7 @@ const AboutUs = () => {
           </ul>
 
           <h2>Contact Us</h2>
-          <p>📍 Address: Chota Bazar, Shahdara, Delhi-32</p>
+          <p>📍 Address: Chhota Bazar, Shahdara, Delhi-32</p>
           <p>
             📧 Email:{" "}
             <a href="mailto:veertraders244246@gmail.com">
