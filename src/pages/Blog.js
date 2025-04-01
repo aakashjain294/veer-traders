@@ -3,6 +3,52 @@ import { Helmet } from "react-helmet";
 import Navbar from "../components/Navbar";
 import "../styles.css";
 
+// Formatting utility function
+const formatBlogContent = (content) => {
+  if (!content) return '';
+
+  // Convert line breaks to paragraphs or br tags
+  let formatted = content
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+
+  // Format headings
+  formatted = formatted.replace(/^(.*?):<br>/gm, '<h3>$1:</h3>');
+
+  // Format lists
+  formatted = formatted.replace(/^• (.*?)<br>/gm, '<li>$1</li>');
+  formatted = formatted.replace(/^(\d+)\. (.*?)<br>/gm, '<li>$2</li>');
+
+  // Wrap lists in ul/ol
+  formatted = formatted.replace(/(<li>.*?<\/li>)+/g, (match) => {
+    return match.includes('1.') ? `<ol>${match}</ol>` : `<ul>${match}</ul>`;
+  });
+
+  // Format supplier sections
+  formatted = formatted.replace(/===SUPPLIER (\d+)===<br>/g, 
+    '<div class="supplier-section"><h3>Supplier $1</h3>');
+
+  // Format tables
+  formatted = formatted.replace(/^(.*?)\|(.*?)\|(.*?)\|(.*?)<br>/gm, 
+    '<tr><td>$1</td><td>$2</td><td>$3</td><td>$4</td></tr>');
+  formatted = formatted.replace(/<tr>.*?<\/tr>/g, (match) => {
+    return `<table>${match}</table>`;
+  });
+
+  // Format FAQ
+  formatted = formatted.replace(/^Q: (.*?)<br>/gm, 
+    '<div class="faq-question">Q: $1</div>');
+  formatted = formatted.replace(/^A: (.*?)<br>/gm, 
+    '<div class="faq-answer">A: $1</div>');
+
+  // Format metadata section
+  formatted = formatted.replace(/===META DATA===<br>/g, 
+    '<div class="meta-section"><h4>Meta Data</h4>');
+
+  // Wrap the entire content in paragraphs
+  return `<p>${formatted}</p>`;
+};
+
 const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -11,10 +57,8 @@ const Blog = () => {
   const modalRef = useRef(null);
 
   // Static meta description and keywords
-  const metaDescription =
-    "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
-  const metaKeywords =
-    "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
+  const metaDescription = "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
+  const metaKeywords = "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
 
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
@@ -53,12 +97,18 @@ const Blog = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
+        
+        // Ensure content has proper line breaks
+        const formattedPosts = data.map(post => ({
+          ...post,
+          content: post.content ? post.content.replace(/\\n/g, '\n') : ''
+        }));
 
         // Update cache
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(CACHE_KEY, JSON.stringify(formattedPosts));
         localStorage.setItem(`${CACHE_KEY}_time`, Date.now());
 
-        setPosts(data);
+        setPosts(formattedPosts);
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -73,13 +123,8 @@ const Blog = () => {
   // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        selectedPost &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
+      if (selectedPost && modalRef.current && !modalRef.current.contains(event.target)) {
         setSelectedPost(null);
-        // Update URL when closing modal
         window.history.pushState(null, "", "/blog");
       }
     };
@@ -90,7 +135,6 @@ const Blog = () => {
     };
   }, [selectedPost]);
 
-  // Update URL when opening modal
   const handlePostClick = (post) => {
     setSelectedPost(post);
     window.history.pushState(
@@ -100,7 +144,6 @@ const Blog = () => {
     );
   };
 
-  // Generate structured data for blog posts
   const generateStructuredData = () => {
     if (!posts.length) return null;
 
@@ -122,9 +165,7 @@ const Blog = () => {
         headline: post.title || "Untitled Post",
         description: post.excerpt || metaDescription,
         datePublished: post.date || new Date().toISOString(),
-        url: `https://veertraders.com/blog/${
-          post.slug || encodeURIComponent(post.title)
-        }`,
+        url: `https://veertraders.com/blog/${post.slug || encodeURIComponent(post.title)}`,
         image: post.image || "https://veertraders.com/default-blog-image.webp",
       })),
     };
@@ -142,25 +183,16 @@ const Blog = () => {
         <title>Veer Traders Blog - Wholesale Toy Supplier Insights</title>
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={metaKeywords} />
-        <meta
-          property="og:title"
-          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
-        />
+        <meta property="og:title" content="Veer Traders Blog - Wholesale Toy Supplier Insights" />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="https://veertraders.com/logo.webp" />
         <meta property="og:site_name" content="Veer Traders" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
-        />
+        <meta name="twitter:title" content="Veer Traders Blog - Wholesale Toy Supplier Insights" />
         <meta name="twitter:description" content={metaDescription} />
-        <meta
-          name="twitter:image"
-          content="https://veertraders.com/logo.webp"
-        />
+        <meta name="twitter:image" content="https://veertraders.com/logo.webp" />
         <link rel="canonical" href={window.location.href} />
         {generateStructuredData()}
       </Helmet>
@@ -277,7 +309,7 @@ const Blog = () => {
               {selectedPost.content && (
                 <article
                   className="post-content"
-                  dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                  dangerouslySetInnerHTML={{ __html: formatBlogContent(selectedPost.content) }}
                   itemProp="articleBody"
                 />
               )}
@@ -289,6 +321,7 @@ const Blog = () => {
             </div>
           </div>
         )}
+
         <footer className="footer">
           <p>📍 Address: Chhota Bazar, Shahdara, Delhi-32</p>
           <p>
