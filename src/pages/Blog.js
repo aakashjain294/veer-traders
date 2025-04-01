@@ -10,6 +10,10 @@ const Blog = () => {
   const [error, setError] = useState(null);
   const modalRef = useRef(null);
 
+  // Static meta description and keywords
+  const metaDescription = "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
+  const metaKeywords = "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
+
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
     const CACHE_DURATION = 3600000; // 1 hour
@@ -73,6 +77,8 @@ const Blog = () => {
         !modalRef.current.contains(event.target)
       ) {
         setSelectedPost(null);
+        // Update URL when closing modal
+        window.history.pushState(null, "", "/blog");
       }
     };
 
@@ -82,10 +88,70 @@ const Blog = () => {
     };
   }, [selectedPost]);
 
+  // Update URL when opening modal
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    window.history.pushState(null, "", `/blog/${post.slug || encodeURIComponent(post.title)}`);
+  };
+
+  // Generate structured data for blog posts
+  const generateStructuredData = () => {
+    if (!posts.length) return null;
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      headline: "Veer Traders Blog",
+      description: metaDescription,
+      publisher: {
+        "@type": "Organization",
+        name: "Veer Traders",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://veertraders.com/logo.webp",
+        },
+      },
+      blogPost: posts.map((post) => ({
+        "@type": "BlogPosting",
+        headline: post.title || "Untitled Post",
+        description: post.excerpt || metaDescription,
+        datePublished: post.date || new Date().toISOString(),
+        url: `https://veertraders.com/blog/${post.slug || encodeURIComponent(post.title)}`,
+        image: post.image || "https://veertraders.com/default-blog-image.webp",
+      })),
+    };
+
+    return (
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
+    );
+  };
+
   return (
     <>
       <Helmet>
-        <title>Veer Traders Blog</title>
+        <title>Veer Traders Blog - Wholesale Toy Supplier Insights</title>
+        <meta name="description" content={metaDescription} />
+        <meta name="keywords" content={metaKeywords} />
+        <meta
+          property="og:title"
+          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
+        />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:image" content="https://veertraders.com/logo.webp" />
+        <meta property="og:site_name" content="Veer Traders" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
+        />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content="https://veertraders.com/logo.webp" />
+        <link rel="canonical" href={window.location.href} />
+        {generateStructuredData()}
       </Helmet>
 
       <div className="blog-container">
@@ -98,68 +164,95 @@ const Blog = () => {
         />
         <Navbar />
 
-        {/* Centered Heading */}
-        <div className="heading-container">
-          <h1>{loading ? "Loading Blog Posts..." : "Latest Blog Posts"}</h1>
-        </div>
-
-        {error ? (
-          <div className="error-message">
-            <p>Failed to load blog posts. Please try again later.</p>
-            <button onClick={() => window.location.reload()}>Retry</button>
+        <main>
+          <div className="heading-container">
+            <h1>{loading ? "Loading Blog Posts..." : "Latest Blog Posts"}</h1>
           </div>
-        ) : (
-          <div className="blog-grid">
-            {loading
-              ? Array(2)
-                  .fill()
-                  .map((_, index) => (
-                    <div
-                      key={`skeleton-${index}`}
-                      className="blog-card skeleton"
+
+          {error ? (
+            <div className="error-message">
+              <p>Failed to load blog posts. Please try again later.</p>
+              <button onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          ) : (
+            <div className="blog-grid" role="list">
+              {loading
+                ? Array(2)
+                    .fill()
+                    .map((_, index) => (
+                      <article
+                        key={`skeleton-${index}`}
+                        className="blog-card skeleton"
+                        role="listitem"
+                      >
+                        <div className="skeleton-image"></div>
+                        <h2>
+                          <span className="sr-only">Loading post</span>
+                          <span className="skeleton-text"></span>
+                        </h2>
+                        <p className="skeleton-date"></p>
+                        <p className="skeleton-excerpt"></p>
+                      </article>
+                    ))
+                : posts.map((post) => (
+                    <article
+                      key={post.slug || post.title}
+                      className="blog-card"
+                      onClick={() => handlePostClick(post)}
+                      role="listitem"
+                      itemScope
+                      itemType="https://schema.org/BlogPosting"
                     >
-                      <div className="skeleton-image"></div>
-                      {/* Ensure heading has accessible content */}
-                      <h2>
-                        <span className="sr-only">Loading post</span>
-                        <span className="skeleton-text"></span>
+                      {post.image && (
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          loading="lazy"
+                          decoding="async"
+                          width="300"
+                          height="200"
+                          itemProp="image"
+                        />
+                      )}
+                      <h2 itemProp="headline">
+                        {post.title || "Untitled Post"}
                       </h2>
-                      <p className="skeleton-date"></p>
-                      <p className="skeleton-excerpt"></p>
-                    </div>
-                  ))
-              : posts.map((post) => (
-                  <div
-                    key={post.slug || post.title}
-                    className="blog-card"
-                    onClick={() => setSelectedPost(post)}
-                  >
-                    {post.image && (
-                      <img src={post.image} alt={post.title} loading="lazy" />
-                    )}
-                    {/* Ensure heading always has text content */}
-                    <h2>{post.title || "Untitled Post"}</h2>
-                    {post.date && <p className="post-date">{post.date}</p>}
-                    {post.excerpt && (
-                      <p className="post-excerpt">{post.excerpt}</p>
-                    )}
-                  </div>
-                ))}
-          </div>
-        )}
+                      {post.date && (
+                        <p className="post-date" itemProp="datePublished">
+                          {post.date}
+                        </p>
+                      )}
+                      {post.excerpt && (
+                        <p className="post-excerpt" itemProp="description">
+                          {post.excerpt}
+                        </p>
+                      )}
+                      <button 
+                        className="read-more-btn"
+                        aria-label={`Read more about ${post.title}`}
+                      >
+                        Read More
+                      </button>
+                    </article>
+                  ))}
+            </div>
+          )}
+        </main>
 
-        {/* Modal with accessible headings */}
         {selectedPost && (
-          <div className="post-modal">
+          <div className="post-modal" aria-modal="true">
             <div className="modal-content" ref={modalRef}>
               <button
                 className="close-button"
-                onClick={() => setSelectedPost(null)}
+                onClick={() => {
+                  setSelectedPost(null);
+                  window.history.pushState(null, "", "/blog");
+                }}
                 aria-label="Close modal"
               >
                 &times;
               </button>
-              <h2>{selectedPost.title || "Post Details"}</h2>
+              <h1>{selectedPost.title || "Post Details"}</h1>
               {selectedPost.date && (
                 <p className="post-date">{selectedPost.date}</p>
               )}
@@ -167,15 +260,21 @@ const Blog = () => {
                 <img
                   src={selectedPost.image}
                   alt={selectedPost.title || ""}
-                  aria-hidden={!selectedPost.title}
+                  loading="lazy"
                 />
               )}
               {selectedPost.content && (
-                <div
+                <article
                   className="post-content"
                   dangerouslySetInnerHTML={{ __html: selectedPost.content }}
+                  itemProp="articleBody"
                 />
               )}
+              <div className="social-share">
+                <button aria-label="Share on Facebook">Facebook</button>
+                <button aria-label="Share on Twitter">Twitter</button>
+                <button aria-label="Share on LinkedIn">LinkedIn</button>
+              </div>
             </div>
           </div>
         )}

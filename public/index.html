@@ -46,13 +46,25 @@
     <meta property="og:url" content="https://www.veertraders.com" />
     <meta property="og:type" content="website" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link
+    <!-- <link
       href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;500;600;700&display=swap"
       rel="stylesheet"
       href="%PUBLIC_URL%/styles.css"
       media="print"
       onload="this.media='all'"
+    /> -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
     <!-- <link rel="manifest" href="%PUBLIC_URL%/manifest.json" /> -->
     <title>
       Veer Traders | Wholesale Toys Supplier in Delhi & India – Best Prices

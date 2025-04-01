@@ -238,7 +238,7 @@ const Catalog = () => {
         value={brandFilter}
         onChange={(e) => setBrandFilter(e.target.value)}
       >
-        <option value="">All Brands</option>
+        <option value="">All Categories</option>
         {brands.map((brand, index) => (
           <option key={index} value={brand}>
             {brand}
