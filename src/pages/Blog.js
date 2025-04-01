@@ -3,50 +3,77 @@ import { Helmet } from "react-helmet";
 import Navbar from "../components/Navbar";
 import "../styles.css";
 
-// Formatting utility function
+// Enhanced formatting function with better future-proofing
 const formatBlogContent = (content) => {
   if (!content) return '';
 
-  // Convert line breaks to paragraphs or br tags
-  let formatted = content
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
+  // First normalize line breaks and handle Windows/Mac/Unix line endings
+  let formatted = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
-  // Format headings
-  formatted = formatted.replace(/^(.*?):<br>/gm, '<h3>$1:</h3>');
+  // Convert multiple newlines into paragraph breaks
+  formatted = formatted.split(/\n\n+/);
 
-  // Format lists
-  formatted = formatted.replace(/^• (.*?)<br>/gm, '<li>$1</li>');
-  formatted = formatted.replace(/^(\d+)\. (.*?)<br>/gm, '<li>$2</li>');
+  // Process each block of content
+  formatted = formatted.map((block) => {
+    block = block.trim();
+    if (!block) return '';
 
-  // Wrap lists in ul/ol
-  formatted = formatted.replace(/(<li>.*?<\/li>)+/g, (match) => {
-    return match.includes('1.') ? `<ol>${match}</ol>` : `<ul>${match}</ul>`;
+    // Handle bold text (marked with **text** in Google Sheets)
+    block = block.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Handle section headers (=== HEADER ===)
+    if (/^===.+===$/g.test(block)) {
+      const title = block.replace(/===/g, '').trim();
+      return `<h3 class="section-header">${title}</h3>`;
+    }
+
+    // Handle lists (both bullet and numbered)
+    if (/^(•|-|\d+\.)\s.+/gm.test(block)) {
+      const isOrdered = /^\d+\./.test(block);
+      const listItems = block.split('\n').map(item => {
+        // Remove list markers and trim, while preserving bold formatting
+        const text = item.replace(/^(•|-|\d+\.)\s+/, '').trim();
+        return `<li>${text}</li>`;
+      }).join('');
+      return isOrdered ? `<ol>${listItems}</ol>` : `<ul>${listItems}</ul>`;
+    }
+
+    // Handle tables (with | separators)
+    if (block.includes('|')) {
+      const rows = block.split('\n').map(row => {
+        const cells = row.split('|').map(cell => {
+          // Preserve bold formatting in table cells
+          const cellContent = cell.trim();
+          return `<td>${cellContent}</td>`;
+        }).join('');
+        return `<tr>${cells}</tr>`;
+      });
+      return `<table class="content-table"><tbody>${rows.join('')}</tbody></table>`;
+    }
+
+    // Handle FAQ items (Q: and A:)
+    if (block.startsWith('Q:')) {
+      const question = block.substring(2).trim();
+      return `<div class="faq-item"><div class="faq-question">${question}</div>`;
+    }
+    if (block.startsWith('A:')) {
+      const answer = block.substring(2).trim();
+      return `<div class="faq-answer">${answer}</div></div>`;
+    }
+
+    // Handle supplier information blocks
+    if (/^SUPPLIER \d+:/i.test(block)) {
+      return `<div class="supplier-block">${block.replace(/\n/g, '<br>')}</div>`;
+    }
+
+    // Handle emphasized text (marked with _text_ in Google Sheets)
+    block = block.replace(/_(.*?)_/g, '<em>$1</em>');
+
+    // Default case - regular paragraph with line breaks and preserved formatting
+    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
   });
 
-  // Format supplier sections
-  formatted = formatted.replace(/===SUPPLIER (\d+)===<br>/g, 
-    '<div class="supplier-section"><h3>Supplier $1</h3>');
-
-  // Format tables
-  formatted = formatted.replace(/^(.*?)\|(.*?)\|(.*?)\|(.*?)<br>/gm, 
-    '<tr><td>$1</td><td>$2</td><td>$3</td><td>$4</td></tr>');
-  formatted = formatted.replace(/<tr>.*?<\/tr>/g, (match) => {
-    return `<table>${match}</table>`;
-  });
-
-  // Format FAQ
-  formatted = formatted.replace(/^Q: (.*?)<br>/gm, 
-    '<div class="faq-question">Q: $1</div>');
-  formatted = formatted.replace(/^A: (.*?)<br>/gm, 
-    '<div class="faq-answer">A: $1</div>');
-
-  // Format metadata section
-  formatted = formatted.replace(/===META DATA===<br>/g, 
-    '<div class="meta-section"><h4>Meta Data</h4>');
-
-  // Wrap the entire content in paragraphs
-  return `<p>${formatted}</p>`;
+  return formatted.join('');
 };
 
 const Blog = () => {
