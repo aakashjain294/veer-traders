@@ -150,6 +150,7 @@ function App() {
           />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug?" element={<Blog />} />
         </Routes>
       </Suspense>
 

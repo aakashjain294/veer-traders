@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Helmet } from "react-helmet";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "../styles.css";
 
 // Enhanced formatting function with better future-proofing
 const formatBlogContent = (content) => {
-  if (!content) return '';
+  if (!content) return "";
 
   // First normalize line breaks and handle Windows/Mac/Unix line endings
-  let formatted = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  let formatted = content.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 
   // Convert multiple newlines into paragraph breaks
   formatted = formatted.split(/\n\n+/);
@@ -16,64 +17,75 @@ const formatBlogContent = (content) => {
   // Process each block of content
   formatted = formatted.map((block) => {
     block = block.trim();
-    if (!block) return '';
+    if (!block) return "";
 
     // Handle bold text (marked with **text** in Google Sheets)
-    block = block.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    block = block.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
     // Handle section headers (=== HEADER ===)
     if (/^===.+===$/g.test(block)) {
-      const title = block.replace(/===/g, '').trim();
+      const title = block.replace(/===/g, "").trim();
       return `<h3 class="section-header">${title}</h3>`;
     }
 
     // Handle lists (both bullet and numbered)
     if (/^(•|-|\d+\.)\s.+/gm.test(block)) {
       const isOrdered = /^\d+\./.test(block);
-      const listItems = block.split('\n').map(item => {
-        // Remove list markers and trim, while preserving bold formatting
-        const text = item.replace(/^(•|-|\d+\.)\s+/, '').trim();
-        return `<li>${text}</li>`;
-      }).join('');
+      const listItems = block
+        .split("\n")
+        .map((item) => {
+          // Remove list markers and trim, while preserving bold formatting
+          const text = item.replace(/^(•|-|\d+\.)\s+/, "").trim();
+          return `<li>${text}</li>`;
+        })
+        .join("");
       return isOrdered ? `<ol>${listItems}</ol>` : `<ul>${listItems}</ul>`;
     }
 
     // Handle tables (with | separators)
-    if (block.includes('|')) {
-      const rows = block.split('\n').map(row => {
-        const cells = row.split('|').map(cell => {
-          // Preserve bold formatting in table cells
-          const cellContent = cell.trim();
-          return `<td>${cellContent}</td>`;
-        }).join('');
+    if (block.includes("|")) {
+      const rows = block.split("\n").map((row) => {
+        const cells = row
+          .split("|")
+          .map((cell) => {
+            // Preserve bold formatting in table cells
+            const cellContent = cell.trim();
+            return `<td>${cellContent}</td>`;
+          })
+          .join("");
         return `<tr>${cells}</tr>`;
       });
-      return `<table class="content-table"><tbody>${rows.join('')}</tbody></table>`;
+      return `<table class="content-table"><tbody>${rows.join(
+        ""
+      )}</tbody></table>`;
     }
 
     // Handle FAQ items (Q: and A:)
-    if (block.startsWith('Q:')) {
+    if (block.startsWith("Q:")) {
       const question = block.substring(2).trim();
       return `<div class="faq-item"><div class="faq-question">${question}</div>`;
     }
-    if (block.startsWith('A:')) {
+    if (block.startsWith("A:")) {
       const answer = block.substring(2).trim();
       return `<div class="faq-answer">${answer}</div></div>`;
     }
 
     // Handle supplier information blocks
     if (/^SUPPLIER \d+:/i.test(block)) {
-      return `<div class="supplier-block">${block.replace(/\n/g, '<br>')}</div>`;
+      return `<div class="supplier-block">${block.replace(
+        /\n/g,
+        "<br>"
+      )}</div>`;
     }
 
     // Handle emphasized text (marked with _text_ in Google Sheets)
-    block = block.replace(/_(.*?)_/g, '<em>$1</em>');
+    block = block.replace(/_(.*?)_/g, "<em>$1</em>");
 
     // Default case - regular paragraph with line breaks and preserved formatting
-    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+    return `<p>${block.replace(/\n/g, "<br>")}</p>`;
   });
 
-  return formatted.join('');
+  return formatted.join("");
 };
 
 const Blog = () => {
@@ -82,10 +94,24 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const modalRef = useRef(null);
+  const { slug } = useParams();
+  const navigate = useNavigate();
 
   // Static meta description and keywords
-  const metaDescription = "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
-  const metaKeywords = "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
+  const metaDescription =
+    "Read the latest news and articles from Veer Traders, your trusted wholesale toy supplier in Delhi. Discover industry insights and product updates.";
+  const metaKeywords =
+    "toy wholesaler Delhi, toy supplier blog, wholesale toys news, Veer Traders updates, toy industry insights";
+
+  const handleCloseModal = useCallback(() => {
+    setSelectedPost(null);
+    navigate("/blog");
+  }, [navigate]);
+
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    navigate(`/blog/${post.slug || encodeURIComponent(post.title)}`);
+  };
 
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
@@ -98,7 +124,20 @@ const Blog = () => {
         const cacheTime = localStorage.getItem(`${CACHE_KEY}_time`);
 
         if (cached && cacheTime && Date.now() - cacheTime < CACHE_DURATION) {
-          setPosts(JSON.parse(cached));
+          const cachedPosts = JSON.parse(cached);
+          setPosts(cachedPosts);
+
+          // Check for slug match after setting cached posts
+          if (slug) {
+            const postFromSlug = cachedPosts.find(
+              (post) =>
+                post.slug === slug || encodeURIComponent(post.title) === slug
+            );
+            if (postFromSlug) {
+              setSelectedPost(postFromSlug);
+            }
+          }
+
           setLoading(false);
           return;
         }
@@ -124,11 +163,11 @@ const Blog = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
-        
+
         // Ensure content has proper line breaks
-        const formattedPosts = data.map(post => ({
+        const formattedPosts = data.map((post) => ({
           ...post,
-          content: post.content ? post.content.replace(/\\n/g, '\n') : ''
+          content: post.content ? post.content.replace(/\\n/g, "\n") : "",
         }));
 
         // Update cache
@@ -136,6 +175,17 @@ const Blog = () => {
         localStorage.setItem(`${CACHE_KEY}_time`, Date.now());
 
         setPosts(formattedPosts);
+
+        // Check for slug match after setting new posts
+        if (slug) {
+          const postFromSlug = formattedPosts.find(
+            (post) =>
+              post.slug === slug || encodeURIComponent(post.title) === slug
+          );
+          if (postFromSlug) {
+            setSelectedPost(postFromSlug);
+          }
+        }
       } catch (err) {
         console.error("Fetch error:", err);
         setError(err.message);
@@ -145,14 +195,16 @@ const Blog = () => {
     };
 
     fetchPosts();
-  }, []);
-
+  }, [slug]);
   // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (selectedPost && modalRef.current && !modalRef.current.contains(event.target)) {
-        setSelectedPost(null);
-        window.history.pushState(null, "", "/blog");
+      if (
+        selectedPost &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target)
+      ) {
+        handleCloseModal();
       }
     };
 
@@ -160,17 +212,8 @@ const Blog = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [selectedPost]);
-
-  const handlePostClick = (post) => {
-    setSelectedPost(post);
-    window.history.pushState(
-      null,
-      "",
-      `/blog/${post.slug || encodeURIComponent(post.title)}`
-    );
-  };
-
+  }, [selectedPost, handleCloseModal]);
+  
   const generateStructuredData = () => {
     if (!posts.length) return null;
 
@@ -192,7 +235,9 @@ const Blog = () => {
         headline: post.title || "Untitled Post",
         description: post.excerpt || metaDescription,
         datePublished: post.date || new Date().toISOString(),
-        url: `https://veertraders.com/blog/${post.slug || encodeURIComponent(post.title)}`,
+        url: `https://veertraders.com/blog/${
+          post.slug || encodeURIComponent(post.title)
+        }`,
         image: post.image || "https://veertraders.com/default-blog-image.webp",
       })),
     };
@@ -210,16 +255,25 @@ const Blog = () => {
         <title>Veer Traders Blog - Wholesale Toy Supplier Insights</title>
         <meta name="description" content={metaDescription} />
         <meta name="keywords" content={metaKeywords} />
-        <meta property="og:title" content="Veer Traders Blog - Wholesale Toy Supplier Insights" />
+        <meta
+          property="og:title"
+          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
+        />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="https://veertraders.com/logo.webp" />
         <meta property="og:site_name" content="Veer Traders" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Veer Traders Blog - Wholesale Toy Supplier Insights" />
+        <meta
+          name="twitter:title"
+          content="Veer Traders Blog - Wholesale Toy Supplier Insights"
+        />
         <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content="https://veertraders.com/logo.webp" />
+        <meta
+          name="twitter:image"
+          content="https://veertraders.com/logo.webp"
+        />
         <link rel="canonical" href={window.location.href} />
         {generateStructuredData()}
       </Helmet>
@@ -314,10 +368,7 @@ const Blog = () => {
             <div className="modal-content" ref={modalRef}>
               <button
                 className="close-button"
-                onClick={() => {
-                  setSelectedPost(null);
-                  window.history.pushState(null, "", "/blog");
-                }}
+                onClick={handleCloseModal}
                 aria-label="Close modal"
               >
                 &times;
@@ -336,7 +387,9 @@ const Blog = () => {
               {selectedPost.content && (
                 <article
                   className="post-content"
-                  dangerouslySetInnerHTML={{ __html: formatBlogContent(selectedPost.content) }}
+                  dangerouslySetInnerHTML={{
+                    __html: formatBlogContent(selectedPost.content),
+                  }}
                   itemProp="articleBody"
                 />
               )}
