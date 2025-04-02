@@ -886,3 +886,19 @@ h1 {
   border-radius: 4px;
   cursor: pointer;
 }
+
+.internal-link {
+  color: #2b6cb0;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.internal-link:hover {
+  color: #1a4f8b;
+}
+
+.post-content a::after {
+  content: "→";
+  margin-left: 2px;
+  opacity: 0.7;
+}

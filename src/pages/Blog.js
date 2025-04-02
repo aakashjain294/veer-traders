@@ -79,7 +79,11 @@ const formatBlogContent = (content) => {
     }
 
     // Handle emphasized text (marked with _text_ in Google Sheets)
-    block = block.replace(/_(.*?)_/g, "<em>$1</em>");
+    block = block.replace(
+      /_(.*?)_/g,
+      '<a href="/blog/$2" class="internal-link" data-slug="$2">$1</a>',
+      "<em>$1</em>"
+    );
 
     // Default case - regular paragraph with line breaks and preserved formatting
     return `<p>${block.replace(/\n/g, "<br>")}</p>`;
@@ -196,6 +200,23 @@ const Blog = () => {
 
     fetchPosts();
   }, [slug]);
+
+  useEffect(() => {
+    const prefetchLinkedPosts = () => {
+      if (selectedPost?.content) {
+        const links = selectedPost.content.match(/data-slug="(.*?)"/g);
+        if (links) {
+          links.forEach((link) => {
+            const slug = link.match(/data-slug="(.*?)"/)[1];
+            // Prefetch the JSON data for linked posts
+            fetch(`/api/blog-posts/${slug}`);
+          });
+        }
+      }
+    };
+    prefetchLinkedPosts();
+  }, [selectedPost]);
+
   // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -213,6 +234,27 @@ const Blog = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedPost, handleCloseModal]);
+
+  // Add this useEffect for link tracking
+  useEffect(() => {
+    const handleInternalLinkClick = (e) => {
+      if (e.target.closest(".internal-link")) {
+        e.preventDefault();
+        const slug = e.target.dataset.slug;
+        // Track in analytics
+        window.ga("send", "event", "Internal Link", "Click", slug);
+        // Navigate
+        const linkedPost = posts.find((p) => p.slug === slug);
+        if (linkedPost) {
+          setSelectedPost(linkedPost);
+          navigate(`/blog/${slug}`);
+        }
+      }
+    };
+
+    document.addEventListener("click", handleInternalLinkClick);
+    return () => document.removeEventListener("click", handleInternalLinkClick);
+  }, [posts, navigate]);
 
   const generateStructuredData = () => {
     if (!posts.length) return null;
