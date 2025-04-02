@@ -210,11 +210,10 @@ const Catalog = () => {
         fetchPriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
-      {/* <h2>Find Wholesale Toys in Delhi</h2> */}
 
       {/* ✅ Move Navbar Below the Heading */}
       <Navbar />
-
+      
       <input
         type="text"
         placeholder="Search products..."

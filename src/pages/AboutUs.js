@@ -50,6 +50,9 @@ const AboutUs = () => {
               ✅ <strong>Trusted by 100+ Businesses</strong> – Serving
               wholesalers & resellers.
             </li>
+            <li>
+              ✅ <strong>No Minimum Order Quantity Required</strong>
+            </li>
           </ul>
 
           <h2>Contact Us</h2>
