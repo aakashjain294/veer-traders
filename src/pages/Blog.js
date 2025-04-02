@@ -115,7 +115,7 @@ const Blog = () => {
 
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
-    const CACHE_DURATION = 3600000; // 1 hour
+    const CACHE_DURATION = 900000; // 1 hour
 
     const fetchPosts = async () => {
       try {
@@ -213,7 +213,7 @@ const Blog = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedPost, handleCloseModal]);
-  
+
   const generateStructuredData = () => {
     if (!posts.length) return null;
 
