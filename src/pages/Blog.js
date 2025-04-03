@@ -81,7 +81,6 @@ const formatBlogContent = (content) => {
     // Handle emphasized text (marked with _text_ in Google Sheets)
     block = block.replace(
       /_(.*?)_/g,
-      '<a href="/blog/$2" class="internal-link" data-slug="$2">$1</a>',
       "<em>$1</em>"
     );
 
