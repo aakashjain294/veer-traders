@@ -119,7 +119,7 @@ const Blog = () => {
 
   useEffect(() => {
     const CACHE_KEY = "blog_posts_client";
-    const CACHE_DURATION = 900000; // 1 hour
+    const CACHE_DURATION = 180000; // 30 min
 
     const fetchPosts = async () => {
       try {

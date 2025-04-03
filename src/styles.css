@@ -718,6 +718,15 @@ h1 {
   pointer-events: none;
 }
 
+/* Fix the image inside the modal */
+.modal-content img {
+  max-width: 100%; /* Prevents image overflow */
+  height: auto;
+  display: block;
+  margin: 10px auto; /* Centers the image */
+  border-radius: 8px;
+}
+
 /* Make content inside modal interactive */
 .modal-content > * {
   pointer-events: auto;
