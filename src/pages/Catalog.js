@@ -200,6 +200,49 @@ const Catalog = () => {
     return true; // Show all products when no filter is applied
   });
 
+  useEffect(() => {
+    let deferredPrompt;
+    const installBtn = document.getElementById("installBtn");
+
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      if (installBtn) {
+        installBtn.classList.remove("hidden");
+
+        const handleClick = () => {
+          installBtn.classList.add("hidden");
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+              console.log("User accepted the install prompt");
+            } else {
+              console.log("User dismissed the install prompt");
+            }
+            deferredPrompt = null;
+          });
+        };
+
+        installBtn.addEventListener("click", handleClick);
+
+        // Cleanup
+        return () => {
+          installBtn.removeEventListener("click", handleClick);
+        };
+      }
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
+    };
+  }, []);
+
   return (
     <div className="container">
       <img
@@ -210,10 +253,8 @@ const Catalog = () => {
         fetchPriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
-
       {/* ✅ Move Navbar Below the Heading */}
       <Navbar />
-      
       <input
         type="text"
         placeholder="Search products..."
@@ -231,7 +272,6 @@ const Catalog = () => {
         <option value="200-500">₹200 - ₹500</option>
         <option value="above-500">Above ₹500</option>
       </select>
-
       <select
         className="brand-filter"
         value={brandFilter}
@@ -244,7 +284,6 @@ const Catalog = () => {
           </option>
         ))}
       </select>
-
       <Suspense fallback={<div>Loading products...</div>}>
         <ProductGrid
           loading={loading}
@@ -256,7 +295,6 @@ const Catalog = () => {
           updateQuantity={updateQuantity}
         />
       </Suspense>
-
       {selectedProduct && (
         <ProductDetail
           product={selectedProduct}
@@ -266,7 +304,6 @@ const Catalog = () => {
           cart={cart}
         />
       )}
-
       <button
         aria-label="View Your Order"
         className="floating-summary-btn"
@@ -275,6 +312,10 @@ const Catalog = () => {
         🛒 View Order
       </button>
 
+      <button id="installBtn" className="install-button hidden">
+        Install App
+      </button>
+      
       {/* Scroll to Top Button */}
       {showScrollButton && (
         <button
@@ -357,7 +398,6 @@ const Catalog = () => {
           </div>
         </div>
       )}
-
       <footer className="footer">
         <p>📍 Address: Chhota Bazar, Shahdara, Delhi-32</p>
         <p>

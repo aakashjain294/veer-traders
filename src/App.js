@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
 import Catalog from "./pages/Catalog";
-
 // Define constants at the top
-const PRODUCTS_API_URL = "https://script.google.com/macros/s/AKfycbx7U2I-MB9oDhZtc-kYGj1NZjc3nBiJIkUMBWm18J0d6_1h0Y9roDukVQfiXUjyD-FaIA/exec";
-const BLOG_API_URL = "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec";
+const PRODUCTS_API_URL =
+  "https://script.google.com/macros/s/AKfycbx7U2I-MB9oDhZtc-kYGj1NZjc3nBiJIkUMBWm18J0d6_1h0Y9roDukVQfiXUjyD-FaIA/exec";
+const BLOG_API_URL =
+  "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec";
 const PRODUCTS_CACHE_KEY = "veertraders_products";
 const BLOG_CACHE_KEY = "blog_posts_client";
 
@@ -32,8 +33,8 @@ function App() {
         requestIdleCallback(() => {
           // Prefetch products
           fetch(PRODUCTS_API_URL)
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
               localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(data));
               localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
             })
@@ -41,8 +42,8 @@ function App() {
 
           // Prefetch blog
           fetch(BLOG_API_URL)
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
               localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(data));
               localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
             })
@@ -50,18 +51,20 @@ function App() {
         });
       } else {
         // Fallback if requestIdleCallback isn't supported
-        Promise.all([
-          fetch(PRODUCTS_API_URL),
-          fetch(BLOG_API_URL)
-        ]).then(async ([productsRes, blogRes]) => {
-          const productsData = await productsRes.json();
-          const blogData = await blogRes.json();
-          
-          localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(productsData));
-          localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
-          localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(blogData));
-          localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
-        }).catch(console.error);
+        Promise.all([fetch(PRODUCTS_API_URL), fetch(BLOG_API_URL)])
+          .then(async ([productsRes, blogRes]) => {
+            const productsData = await productsRes.json();
+            const blogData = await blogRes.json();
+
+            localStorage.setItem(
+              PRODUCTS_CACHE_KEY,
+              JSON.stringify(productsData)
+            );
+            localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
+            localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(blogData));
+            localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
+          })
+          .catch(console.error);
       }
     };
 
@@ -89,18 +92,18 @@ function App() {
 
   // Cart functions
   const addToCart = useCallback((productId, productName, productPrice) => {
-    setCart(prevCart => ({
+    setCart((prevCart) => ({
       ...prevCart,
       [productId]: {
         name: productName,
         price: productPrice,
-        quantity: (prevCart[productId]?.quantity || 0) + 1
-      }
+        quantity: (prevCart[productId]?.quantity || 0) + 1,
+      },
     }));
   }, []);
 
   const removeFromCart = useCallback((productId) => {
-    setCart(prevCart => {
+    setCart((prevCart) => {
       const newCart = { ...prevCart };
       if (newCart[productId]) {
         newCart[productId].quantity -= 1;
@@ -125,6 +128,7 @@ function App() {
         <title>
           Veer Traders | Wholesale Toys Supplier in Delhi & India – Best Prices
         </title>
+
         <meta
           name="description"
           content="Veer Traders: Your top wholesale toy supplier in Delhi & India. Get bulk toys at best prices. Wide range: Centy, Annie, Intex. Serving retailers & businesses."
@@ -135,7 +139,7 @@ function App() {
         />
         <meta name="author" content="Veer Traders" />
       </Helmet>
-      
+
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route
