@@ -1,9 +1,9 @@
-// workbox-config.js
 module.exports = {
   globDirectory: "build/",
   globPatterns: ["**/*.{html,js,css,png,jpg,jpeg,svg,json,ico}"],
   swDest: "build/sw.js",
   navigateFallback: "/index.html",
+  navigateFallbackAllowlist: [/^\/$/], // 👈 Important for SPA routing
   runtimeCaching: [
     {
       urlPattern: /\.(?:png|jpg|jpeg|svg|webp)$/,
