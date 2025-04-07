@@ -276,7 +276,7 @@ h1 {
   bottom: 20px;
   left: 20px;
   z-index: 1200;
-  background-color: #4caf50;
+  background-color: #ff6600;
   color: white;
   border: none;
   border-radius: 50px;
@@ -289,7 +289,7 @@ h1 {
 }
 
 .install-button:hover {
-  background-color: #45a049;
+  background-color: #ff2600;
 }
 
 .cart-quantity {
@@ -343,7 +343,8 @@ h1 {
 }
 
 .empty-cart-btn:hover {
-  background: darkred;
+  background: rgb(255, 255, 255);
+  color: black;
 }
 
 /* Footer */
