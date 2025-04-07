@@ -1,8 +1,9 @@
+// workbox-config.js
 module.exports = {
   globDirectory: "build/",
-  globPatterns: ["**/*.{html,js,css,png,jpg,jpeg,svg,json,ico}", "**/*.csv"],
+  globPatterns: ["**/*.{html,js,css,png,jpg,jpeg,svg,json,ico}"],
   swDest: "build/sw.js",
-  navigateFallback: "/offline.html",
+  navigateFallback: "/index.html",
   runtimeCaching: [
     {
       urlPattern: /\.(?:png|jpg|jpeg|svg|webp)$/,
@@ -11,18 +12,22 @@ module.exports = {
         cacheName: "image-cache",
         expiration: {
           maxEntries: 100,
-          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+          maxAgeSeconds: 7 * 24 * 60 * 60,
         },
       },
     },
     {
-      urlPattern: new RegExp("https://script.google.com/macros/"),
+      urlPattern: /^https:\/\/script\.google\.com\/macros\/s\/.*/,
       handler: "NetworkFirst",
       options: {
-        cacheName: "google-scripts",
-        networkTimeoutSeconds: 3,
+        cacheName: "google-sheets",
+        networkTimeoutSeconds: 5,
         expiration: {
-          maxEntries: 50,
+          maxEntries: 5,
+          maxAgeSeconds: 24 * 60 * 60,
+        },
+        cacheableResponse: {
+          statuses: [0, 200],
         },
       },
     },
