@@ -312,10 +312,10 @@ const Catalog = () => {
         🛒 View Order
       </button>
 
-      <button id="installBtn" className="install-button hidden">
+      <button aria-label="Download App" id="installBtn" className="install-button hidden">
         Install App
       </button>
-      
+
       {/* Scroll to Top Button */}
       {showScrollButton && (
         <button
