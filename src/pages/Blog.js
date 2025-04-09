@@ -79,10 +79,7 @@ const formatBlogContent = (content) => {
     }
 
     // Handle emphasized text (marked with _text_ in Google Sheets)
-    block = block.replace(
-      /_(.*?)_/g,
-      "<em>$1</em>"
-    );
+    block = block.replace(/_(.*?)_/g, "<em>$1</em>");
 
     // Default case - regular paragraph with line breaks and preserved formatting
     return `<p>${block.replace(/\n/g, "<br>")}</p>`;
@@ -290,6 +287,15 @@ const Blog = () => {
     );
   };
 
+  if (!navigator.onLine && loading) {
+    return (
+      <div className="blog-container">
+        <h1>Go Online</h1>
+        <p>Please connect to the internet to view blog posts.</p>
+      </div>
+    );
+  }
+  
   return (
     <>
       <Helmet>

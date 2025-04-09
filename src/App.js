@@ -26,12 +26,36 @@ function App() {
     }
   });
 
+  // Register service worker
   useEffect(() => {
-    // Combined prefetch function for both products and blog
-    const prefetchData = () => {
-      if ("requestIdleCallback" in window) {
-        requestIdleCallback(() => {
-          // Prefetch products
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((registration) => console.log("SW registered:", registration))
+          .catch((error) => console.log("SW registration failed:", error));
+      });
+    }
+  }, []);
+
+  // Offline detection
+  useEffect(() => {
+    const handleOffline = () => {
+      if (!navigator.onLine) {
+        alert(
+          "You are offline. Please connect to the internet to view updated content."
+        );
+      }
+    };
+    window.addEventListener("offline", handleOffline);
+    return () => window.removeEventListener("offline", handleOffline);
+  }, []);
+
+  // Combined prefetch function for both products and blog
+  const prefetchData = useCallback(() => {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(() => {
+        if (navigator.onLine) {
           fetch(PRODUCTS_API_URL)
             .then((res) => res.json())
             .then((data) => {
@@ -40,7 +64,6 @@ function App() {
             })
             .catch(console.error);
 
-          // Prefetch blog
           fetch(BLOG_API_URL)
             .then((res) => res.json())
             .then((data) => {
@@ -48,14 +71,14 @@ function App() {
               localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
             })
             .catch(console.error);
-        });
-      } else {
-        // Fallback if requestIdleCallback isn't supported
+        }
+      });
+    } else {
+      if (navigator.onLine) {
         Promise.all([fetch(PRODUCTS_API_URL), fetch(BLOG_API_URL)])
           .then(async ([productsRes, blogRes]) => {
             const productsData = await productsRes.json();
             const blogData = await blogRes.json();
-
             localStorage.setItem(
               PRODUCTS_CACHE_KEY,
               JSON.stringify(productsData)
@@ -66,19 +89,20 @@ function App() {
           })
           .catch(console.error);
       }
-    };
+    }
+  }, []);
 
-    // Prefetch when route changes or on mount
-    const handleRouteChange = () => {
-      if (window.location.pathname === "/") return;
-      prefetchData();
-    };
+  // Prefetch when route changes or on mount (memoized)
+  const handleRouteChange = useCallback(() => {
+    if (window.location.pathname === "/") return;
+    prefetchData();
+  }, [prefetchData]); // Depends on memoized prefetchData
 
+  useEffect(() => {
     window.addEventListener("popstate", handleRouteChange);
     prefetchData(); // Initial prefetch
-
     return () => window.removeEventListener("popstate", handleRouteChange);
-  }, []);
+  }, [handleRouteChange, prefetchData]);
 
   // Cart persistence
   useEffect(() => {

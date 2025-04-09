@@ -243,6 +243,15 @@ const Catalog = () => {
     };
   }, []);
 
+  if (!navigator.onLine && loading) {
+    return (
+      <div className="container">
+        <h1>Go Online</h1>
+        <p>Please connect to the internet to view products.</p>
+      </div>
+    );
+  }
+   
   return (
     <div className="container">
       <img
@@ -312,7 +321,11 @@ const Catalog = () => {
         🛒 View Order
       </button>
 
-      <button aria-label="Download App" id="installBtn" className="install-button hidden">
+      <button
+        aria-label="Download App"
+        id="installBtn"
+        className="install-button hidden"
+      >
         Install App
       </button>
 
