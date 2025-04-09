@@ -178,7 +178,7 @@ const Catalog = () => {
     message += `📞 Call Us: %2B91 9910667810 / %2B91 9810853878%0A`; // Phone Numbers
     message += `📧 Email: veertraders244246@gmail.com%0A`; // Email ID
 
-    const number1 = "+919910667810";
+    const number1 = "+919810853878";
     window.open(`https://wa.me/${number1}?text=${message}`, "_blank");
   };
 
