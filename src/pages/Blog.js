@@ -147,7 +147,7 @@ const Blog = () => {
         const timeout = setTimeout(() => controller.abort(), 5000);
 
         const response = await fetch(
-          "https://script.google.com/macros/s/AKfycby9--JwWCPCXRZllBZ-kN6FNkuR2Je_nlNEA51cszdIW-KU30UC51wk2vKnwbiugRg4/exec",
+          "https://script.google.com/macros/s/AKfycbz2vyDud0fu66rXfIl26eFdcEqWDEw7Oig7X08aVz0oyC_7eV935Dzh7I78n-IfYRkE/exec",
           {
             signal: controller.signal,
             redirect: "follow",

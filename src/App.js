@@ -5,9 +5,9 @@ import { lazy, Suspense } from "react";
 import Catalog from "./pages/Catalog";
 // Define constants at the top
 const PRODUCTS_API_URL =
-  "https://script.google.com/macros/s/AKfycbx7U2I-MB9oDhZtc-kYGj1NZjc3nBiJIkUMBWm18J0d6_1h0Y9roDukVQfiXUjyD-FaIA/exec";
+  "https://script.google.com/macros/s/AKfycbxSuzpMwbcsEHIiX2zvUDkmuM7t38XhfvFKcju-1mH4SmEF2KA6Tuna4w31DyrQ8Lm3nw/exec";
 const BLOG_API_URL =
-  "https://script.google.com/macros/s/AKfycbzQE-j8fZcIPRIZUOieFmXGQD9-_yEpGx5fDYXr1U5VjKMlxVlb3sGj7B4_OJWzeKsq/exec";
+  "https://script.google.com/macros/s/AKfycbz2vyDud0fu66rXfIl26eFdcEqWDEw7Oig7X08aVz0oyC_7eV935Dzh7I78n-IfYRkE/exec";
 const PRODUCTS_CACHE_KEY = "veertraders_products";
 const BLOG_CACHE_KEY = "blog_posts_client";
 
