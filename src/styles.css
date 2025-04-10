@@ -315,8 +315,8 @@ h1 {
 
 .order-btn {
   font-size: large;
-  background: #ff6600;
-  color: white;
+  background: #2cbe00;
+  color: rgb(0, 0, 0);
 }
 
 .close-btn {
@@ -342,7 +342,7 @@ h1 {
 }
 
 .empty-cart-btn:hover {
-  background: rgb(255, 255, 255);
+  background: rgb(212, 212, 212);
   color: black;
 }
 
