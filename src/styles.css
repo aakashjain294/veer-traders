@@ -271,26 +271,6 @@ h1 {
   overflow-y: auto;
 }
 
-.install-button {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1200;
-  background-color: #ff6600;
-  color: white;
-  border-radius: 50px;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-}
-
-.install-button:hover {
-  background-color: #ff2600;
-}
-
 .cart-quantity {
   display: flex;
   align-items: center;
@@ -315,10 +295,13 @@ h1 {
 
 .order-btn {
   font-size: large;
-  background: #2cbe00;
-  color: rgb(0, 0, 0);
+  background: #01d324;
+  color: white;
 }
-
+.order-btn:hover{
+  background: #009b1a;
+  color: white;
+}
 .close-btn {
   color: white;
   background: #fa0000;
@@ -326,6 +309,7 @@ h1 {
 
 .close-btn:hover {
   background: #aaa;
+  color: #000;
 }
 
 /* Empty Cart Button */
@@ -342,8 +326,8 @@ h1 {
 }
 
 .empty-cart-btn:hover {
-  background: rgb(212, 212, 212);
-  color: black;
+  background: rgb(202, 201, 201);
+  color: #000;
 }
 
 /* Footer */
@@ -634,12 +618,7 @@ h1 {
 }
 
 .about-container {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.842
-  ); /* Light white overlay for readability */ /* Slight white overlay for readability */
+  background: rgba(255, 255, 255, 0.842); /* Light white overlay for readability */ /* Slight white overlay for readability */
   padding: 30px;
   border-radius: 10px;
   max-width: 900px;
@@ -839,12 +818,8 @@ h1 {
 }
 
 @keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Accessibility Styles */

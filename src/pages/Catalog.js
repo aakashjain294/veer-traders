@@ -18,7 +18,7 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
   const [brandFilter, setBrandFilter] = useState(""); // New Brand Filter State
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbxSuzpMwbcsEHIiX2zvUDkmuM7t38XhfvFKcju-1mH4SmEF2KA6Tuna4w31DyrQ8Lm3nw/exec";
+    "https://script.google.com/macros/s/AKfycbyOCgFOtA16SVIJLahjPlGsPQPrG2ZV20FM_3SOWEqzkiaad_io4ITEulejjs4fBUuvjQ/exec";
 
   // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
@@ -178,7 +178,7 @@ const Catalog = () => {
     message += `📞 Call Us: %2B91 9910667810 / %2B91 9810853878%0A`; // Phone Numbers
     message += `📧 Email: veertraders244246@gmail.com%0A`; // Email ID
 
-    const number1 = "+919810853878";
+    const number1 = "+919910667810";
     window.open(`https://wa.me/${number1}?text=${message}`, "_blank");
   };
 
@@ -200,58 +200,6 @@ const Catalog = () => {
     return true; // Show all products when no filter is applied
   });
 
-  useEffect(() => {
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
-
-    const handleBeforeInstallPrompt = (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-
-      if (installBtn) {
-        installBtn.classList.remove("hidden");
-
-        const handleClick = () => {
-          installBtn.classList.add("hidden");
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === "accepted") {
-              console.log("User accepted the install prompt");
-            } else {
-              console.log("User dismissed the install prompt");
-            }
-            deferredPrompt = null;
-          });
-        };
-
-        installBtn.addEventListener("click", handleClick);
-
-        // Cleanup
-        return () => {
-          installBtn.removeEventListener("click", handleClick);
-        };
-      }
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
-    };
-  }, []);
-
-  if (!navigator.onLine && loading) {
-    return (
-      <div className="container">
-        <h1>Go Online</h1>
-        <p>Please connect to the internet to view products.</p>
-      </div>
-    );
-  }
-   
   return (
     <div className="container">
       <img
@@ -262,8 +210,10 @@ const Catalog = () => {
         fetchPriority="high"
       />
       <h1>" Your Trusted Source For Bulk Toy Supplies "</h1>
+
       {/* ✅ Move Navbar Below the Heading */}
       <Navbar />
+      
       <input
         type="text"
         placeholder="Search products..."
@@ -281,6 +231,7 @@ const Catalog = () => {
         <option value="200-500">₹200 - ₹500</option>
         <option value="above-500">Above ₹500</option>
       </select>
+
       <select
         className="brand-filter"
         value={brandFilter}
@@ -293,6 +244,7 @@ const Catalog = () => {
           </option>
         ))}
       </select>
+
       <Suspense fallback={<div>Loading products...</div>}>
         <ProductGrid
           loading={loading}
@@ -304,6 +256,7 @@ const Catalog = () => {
           updateQuantity={updateQuantity}
         />
       </Suspense>
+
       {selectedProduct && (
         <ProductDetail
           product={selectedProduct}
@@ -313,20 +266,13 @@ const Catalog = () => {
           cart={cart}
         />
       )}
+
       <button
         aria-label="View Your Order"
         className="floating-summary-btn"
         onClick={() => setShowSummary(true)}
       >
         🛒 View Order
-      </button>
-
-      <button
-        aria-label="Download App"
-        id="installBtn"
-        className="install-button hidden"
-      >
-        Install App
       </button>
 
       {/* Scroll to Top Button */}
@@ -411,6 +357,7 @@ const Catalog = () => {
           </div>
         </div>
       )}
+
       <footer className="footer">
         <p>📍 Address: Chhota Bazar, Shahdara, Delhi-32</p>
         <p>

@@ -79,7 +79,10 @@ const formatBlogContent = (content) => {
     }
 
     // Handle emphasized text (marked with _text_ in Google Sheets)
-    block = block.replace(/_(.*?)_/g, "<em>$1</em>");
+    block = block.replace(
+      /_(.*?)_/g,
+      "<em>$1</em>"
+    );
 
     // Default case - regular paragraph with line breaks and preserved formatting
     return `<p>${block.replace(/\n/g, "<br>")}</p>`;
@@ -147,7 +150,7 @@ const Blog = () => {
         const timeout = setTimeout(() => controller.abort(), 5000);
 
         const response = await fetch(
-          "https://script.google.com/macros/s/AKfycbz2vyDud0fu66rXfIl26eFdcEqWDEw7Oig7X08aVz0oyC_7eV935Dzh7I78n-IfYRkE/exec",
+          "https://script.google.com/macros/s/AKfycbxkg8aAA_zYiN4PXQOCmfCopTGAr98kIkbPARRpUyNT9xlneaNxqWW8nisLxBAAdeKq/exec",
           {
             signal: controller.signal,
             redirect: "follow",
@@ -287,15 +290,6 @@ const Blog = () => {
     );
   };
 
-  if (!navigator.onLine && loading) {
-    return (
-      <div className="blog-container">
-        <h1>Go Online</h1>
-        <p>Please connect to the internet to view blog posts.</p>
-      </div>
-    );
-  }
-  
   return (
     <>
       <Helmet>

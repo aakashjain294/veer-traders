@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
 import Catalog from "./pages/Catalog";
+
 // Define constants at the top
-const PRODUCTS_API_URL =
-  "https://script.google.com/macros/s/AKfycbxSuzpMwbcsEHIiX2zvUDkmuM7t38XhfvFKcju-1mH4SmEF2KA6Tuna4w31DyrQ8Lm3nw/exec";
-const BLOG_API_URL =
-  "https://script.google.com/macros/s/AKfycbz2vyDud0fu66rXfIl26eFdcEqWDEw7Oig7X08aVz0oyC_7eV935Dzh7I78n-IfYRkE/exec";
+const PRODUCTS_API_URL = "https://script.google.com/macros/s/AKfycbyOCgFOtA16SVIJLahjPlGsPQPrG2ZV20FM_3SOWEqzkiaad_io4ITEulejjs4fBUuvjQ/exec";
+const BLOG_API_URL = "https://script.google.com/macros/s/AKfycbxkg8aAA_zYiN4PXQOCmfCopTGAr98kIkbPARRpUyNT9xlneaNxqWW8nisLxBAAdeKq/exec";
 const PRODUCTS_CACHE_KEY = "veertraders_products";
 const BLOG_CACHE_KEY = "blog_posts_client";
 
@@ -26,83 +25,57 @@ function App() {
     }
   });
 
-  // Register service worker
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((registration) => console.log("SW registered:", registration))
-          .catch((error) => console.log("SW registration failed:", error));
-      });
-    }
-  }, []);
-
-  // Offline detection
-  useEffect(() => {
-    const handleOffline = () => {
-      if (!navigator.onLine) {
-        alert(
-          "You are offline. Please connect to the internet to view updated content."
-        );
-      }
-    };
-    window.addEventListener("offline", handleOffline);
-    return () => window.removeEventListener("offline", handleOffline);
-  }, []);
-
-  // Combined prefetch function for both products and blog
-  const prefetchData = useCallback(() => {
-    if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => {
-        if (navigator.onLine) {
+    // Combined prefetch function for both products and blog
+    const prefetchData = () => {
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(() => {
+          // Prefetch products
           fetch(PRODUCTS_API_URL)
-            .then((res) => res.json())
-            .then((data) => {
+            .then(res => res.json())
+            .then(data => {
               localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(data));
               localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
             })
             .catch(console.error);
 
+          // Prefetch blog
           fetch(BLOG_API_URL)
-            .then((res) => res.json())
-            .then((data) => {
+            .then(res => res.json())
+            .then(data => {
               localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(data));
               localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
             })
             .catch(console.error);
-        }
-      });
-    } else {
-      if (navigator.onLine) {
-        Promise.all([fetch(PRODUCTS_API_URL), fetch(BLOG_API_URL)])
-          .then(async ([productsRes, blogRes]) => {
-            const productsData = await productsRes.json();
-            const blogData = await blogRes.json();
-            localStorage.setItem(
-              PRODUCTS_CACHE_KEY,
-              JSON.stringify(productsData)
-            );
-            localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
-            localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(blogData));
-            localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
-          })
-          .catch(console.error);
+        });
+      } else {
+        // Fallback if requestIdleCallback isn't supported
+        Promise.all([
+          fetch(PRODUCTS_API_URL),
+          fetch(BLOG_API_URL)
+        ]).then(async ([productsRes, blogRes]) => {
+          const productsData = await productsRes.json();
+          const blogData = await blogRes.json();
+          
+          localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(productsData));
+          localStorage.setItem(`${PRODUCTS_CACHE_KEY}_time`, Date.now());
+          localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify(blogData));
+          localStorage.setItem(`${BLOG_CACHE_KEY}_time`, Date.now());
+        }).catch(console.error);
       }
-    }
-  }, []);
+    };
 
-  // Prefetch when route changes or on mount (memoized)
-  const handleRouteChange = useCallback(() => {
-    if (window.location.pathname === "/") return;
-    prefetchData();
-  }, [prefetchData]); // Depends on memoized prefetchData
+    // Prefetch when route changes or on mount
+    const handleRouteChange = () => {
+      if (window.location.pathname === "/") return;
+      prefetchData();
+    };
 
-  useEffect(() => {
     window.addEventListener("popstate", handleRouteChange);
     prefetchData(); // Initial prefetch
+
     return () => window.removeEventListener("popstate", handleRouteChange);
-  }, [handleRouteChange, prefetchData]);
+  }, []);
 
   // Cart persistence
   useEffect(() => {
@@ -116,18 +89,18 @@ function App() {
 
   // Cart functions
   const addToCart = useCallback((productId, productName, productPrice) => {
-    setCart((prevCart) => ({
+    setCart(prevCart => ({
       ...prevCart,
       [productId]: {
         name: productName,
         price: productPrice,
-        quantity: (prevCart[productId]?.quantity || 0) + 1,
-      },
+        quantity: (prevCart[productId]?.quantity || 0) + 1
+      }
     }));
   }, []);
 
   const removeFromCart = useCallback((productId) => {
-    setCart((prevCart) => {
+    setCart(prevCart => {
       const newCart = { ...prevCart };
       if (newCart[productId]) {
         newCart[productId].quantity -= 1;
@@ -152,7 +125,6 @@ function App() {
         <title>
           Veer Traders | Wholesale Toys Supplier in Delhi & India – Best Prices
         </title>
-
         <meta
           name="description"
           content="Veer Traders: Your top wholesale toy supplier in Delhi & India. Get bulk toys at best prices. Wide range: Centy, Annie, Intex. Serving retailers & businesses."
@@ -163,7 +135,7 @@ function App() {
         />
         <meta name="author" content="Veer Traders" />
       </Helmet>
-
+      
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route
