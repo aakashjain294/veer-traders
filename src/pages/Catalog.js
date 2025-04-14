@@ -18,7 +18,7 @@ const Catalog = () => {
   const [loading, setLoading] = useState(true);
   const [brandFilter, setBrandFilter] = useState(""); // New Brand Filter State
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbySEg5HEo20GIxGPA8izr9rhou1RCQzo3dgwVrhK63QGQZEI6WITwjKKHrJwHDtBQwQJg/exec";
+    "https://script.google.com/macros/s/AKfycbyER2jsvV1L7bekmw7MAajwnNArjsi-UTu3BY6e96fsSzphzfOCN5Zlz-gs8qG5MhLL/exec";
 
   // const API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
