@@ -132,7 +132,7 @@ const Catalog = () => {
   const removeFromCart = (productName) => {
     setCart((prevCart) => {
       const updatedCart = { ...prevCart };
-      if (updatedCart[productName]?.quantity > 1) {
+      if (updatedCart[productName]?.quantity >= 1) {
         updatedCart[productName].quantity -= 1;
       } else {
         delete updatedCart[productName];

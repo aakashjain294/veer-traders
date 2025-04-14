@@ -13,10 +13,10 @@ const ProductDetail = ({
   const modalRef = useRef(null); // ✅ Reference for the modal
 
   // ✅ UseMemo to prevent unnecessary recalculations
-  const additionalImages = useMemo(
+  const additionalimages = useMemo(
     () =>
-      Array.isArray(product.additionalImages) ? product.additionalImages : [],
-    [product.additionalImages]
+      Array.isArray(product.additionalimages) ? product.additionalimages : [],
+    [product.additionalimages]
   );
 
   // const isInStock = product.quantity > 0;
@@ -28,13 +28,13 @@ const ProductDetail = ({
 
   // ✅ Preload images for smoother transitions
   useEffect(() => {
-    if (additionalImages.length > 0) {
-      additionalImages.forEach((img) => {
+    if (additionalimages.length > 0) {
+      additionalimages.forEach((img) => {
         const imgObj = new Image();
         imgObj.src = img;
       });
     }
-  }, [additionalImages]);
+  }, [additionalimages]);
 
   // ✅ Close modal if clicked outside
   useEffect(() => {
@@ -92,11 +92,11 @@ const ProductDetail = ({
           }
 
           {/* Additional Images Section */}
-          {additionalImages.length > 0 && (
+          {additionalimages.length > 0 && (
             <div className="additional-images">
               <h3>More Images</h3>
               <div className="image-thumbnails">
-                {additionalImages.map((img, index) => (
+                {additionalimages.map((img, index) => (
                   <img
                     loading="lazy"
                     key={index}
@@ -127,7 +127,7 @@ const ProductDetail = ({
           "@context": "https://schema.org/",
           "@type": "Product",
           name: product.name,
-          image: [mainImage, ...additionalImages], // Include main and additional images
+          image: [mainImage, ...additionalimages], // Include main and additional images
           description: product.description || "Check product details",
           sku: product.id || "N/A", // If you have product ID or SKU
           brand: {
